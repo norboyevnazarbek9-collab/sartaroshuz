@@ -3,201 +3,282 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#c4161f">
+<meta name="theme-color" content="#0e0d0c">
 <title>Sartaroshxona</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --brand:#d4202f;--brand-d:#b3141f;--brand-l:#fdecee;--brand-g:linear-gradient(180deg,#e0303f 0%,#c4161f 100%);
-    --bg:#fdeeef;--card:#fff1f2;--in:#fff;--text:#1d1b1c;--hint:#85797b;--line:#f1d0d4;
-    --ok:#1f9d57;--ok-l:#e7f6ee;--warn:#d98a00;--warn-l:#fff4dc;--bad:#c4161f;--busy:#ece4e5;--gold:#f5a623;
+    --bg:#0e0d0c;--surface:#171513;--surface2:#1f1c19;--surface3:#272320;--line:#2e2a25;
+    --text:#f4efe6;--muted:#9a9186;--gold:#d4a853;--gold2:#b8893a;--gold-g:linear-gradient(135deg,#e3bd6a 0%,#c4973f 100%);
+    --ok:#4cc38a;--ok-l:rgba(76,195,138,.14);--warn:#e5a93d;--warn-l:rgba(229,169,61,.14);--bad:#ef6b6b;--bad-l:rgba(239,107,107,.14);
+    --top-bg:rgba(14,13,12,.82);--nav-bg:rgba(28,25,22,.88);--past-bg:#1a1816;--past-txt:#4f4941;--dayoff-bg:#221f1c;--dayoff-txt:#6f685e;
+    --meta-txt:#cfc7ba;--star-off:#3d372f;--card-shadow:0 10px 30px rgba(0,0,0,.35);--glow:rgba(212,168,83,.10);
+    --r:18px;--font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--head:"Oswald","Inter",system-ui,sans-serif;
+  }
+  html.light{
+    --bg:#f5f3ef;--surface:#ffffff;--surface2:#f0ece4;--surface3:#e5dfd3;--line:#dfd8cb;
+    --text:#1c1915;--muted:#6e675f;--gold:#b88628;--gold2:#9a6d1a;--gold-g:linear-gradient(135deg,#dfb660 0%,#be8e30 100%);
+    --ok:#1e9e63;--ok-l:rgba(30,158,99,.13);--warn:#c98518;--warn-l:rgba(201,133,24,.14);--bad:#dc4c4c;--bad-l:rgba(220,76,76,.13);
+    --top-bg:rgba(245,243,239,.86);--nav-bg:rgba(255,255,255,.92);--past-bg:#ece8e0;--past-txt:#aba398;--dayoff-bg:#e8e3d9;--dayoff-txt:#8c8479;
+    --meta-txt:#4a443d;--star-off:#d4cec2;--card-shadow:0 8px 24px rgba(28,25,21,.07);--glow:rgba(212,168,83,.16);
+    color-scheme:light;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html{background:var(--bg);-webkit-text-size-adjust:100%}
-  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--text);min-height:100vh;line-height:1.4;
-    background:linear-gradient(180deg,#f7c4cb 0,#fbdde1 280px,#fdeeef 100%) no-repeat;background-color:var(--bg)}
-  .wrap{max-width:980px;margin:0 auto;padding:14px 14px calc(28px + env(safe-area-inset-bottom))}
-  .card{background:var(--card);border:1px solid #f6cfd4;border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(180,20,31,.07);margin-bottom:14px}
-  h1{font-size:21px;letter-spacing:-.2px} h2{font-size:17px;margin-bottom:12px} h3{font-size:16px}
-  h2::before{content:"";display:inline-block;width:4px;height:16px;border-radius:2px;background:var(--brand);margin-right:8px;vertical-align:-2px}
-  .hint{color:var(--hint);font-size:13px}
-  label{display:block;font-size:13px;font-weight:500;color:var(--hint);margin:12px 0 5px}
-  input,select{width:100%;height:46px;padding:0 14px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;background:var(--in);color:var(--text);font-family:inherit;transition:border-color .15s,box-shadow .15s}
-  input:focus,select:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 4px rgba(212,32,47,.12)}
- 
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border:0;border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;letter-spacing:.2px;cursor:pointer;white-space:nowrap;transition:transform .12s,box-shadow .15s,background .15s,filter .15s;user-select:none}
-  .btn svg{width:18px;height:18px;flex:none}
-  .btn:active{transform:translateY(1px) scale(.99)}
-  .btn:focus-visible{outline:0;box-shadow:0 0 0 4px rgba(212,32,47,.25)}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
-  .btn.block{width:100%;margin-top:14px}
-  .btn.sm{height:38px;padding:0 14px;font-size:14px;border-radius:10px}
-  .btn.primary{background:var(--brand-g);color:#fff;box-shadow:0 6px 16px rgba(212,32,47,.30),inset 0 1px 0 rgba(255,255,255,.22)}
-  .btn.primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
-  .btn.success{background:linear-gradient(180deg,#2bb56b,#198a4c);color:#fff;box-shadow:0 6px 16px rgba(31,157,87,.28),inset 0 1px 0 rgba(255,255,255,.22)}
-  .btn.success:hover{filter:brightness(1.06);transform:translateY(-1px)}
-  .btn.outline{background:#fff;color:var(--brand);box-shadow:inset 0 0 0 1.5px var(--brand)}
-  .btn.outline:hover{background:var(--brand-l)}
-  .btn.ghost{background:#fff;color:#4a4345;box-shadow:inset 0 0 0 1.5px var(--line)}
-  .btn.ghost:hover{background:#fff7f8}
-  .btn.soft{background:#fff;color:var(--brand);box-shadow:inset 0 0 0 1.5px #f2c3c9}
-  .btn.soft:hover{background:var(--brand-l)}
-  .btn.glass{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
-  .btn.glass:hover{background:rgba(255,255,255,.28)}
-  .link{background:none;border:0;color:var(--brand);padding:8px 2px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer}
+  html{background:var(--bg);-webkit-text-size-adjust:100%;color-scheme:dark;transition:background .2s,color .2s}
+  body{font-family:var(--font);color:var(--text);min-height:100vh;line-height:1.45;background:
+    radial-gradient(900px 420px at 85% -120px,var(--glow),transparent 70%),var(--bg)}
+  svg{width:18px;height:18px;flex:none}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 16px calc(104px + env(safe-area-inset-bottom))}
+  h1,h2,h3{font-weight:600}
+  h1{font-family:var(--head);font-size:22px;letter-spacing:1.2px;text-transform:uppercase}
+  h2{font-family:var(--head);font-size:17px;letter-spacing:.8px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";width:3px;height:16px;border-radius:2px;background:var(--gold-g)}
+  h3{font-size:17px;letter-spacing:-.1px}
+  .hint{color:var(--muted);font-size:13px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:var(--card-shadow)}
+  label{display:block;font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  input,select{width:100%;height:48px;padding:0 14px;border:1px solid var(--line);border-radius:12px;font-size:16px;background:var(--surface2);color:var(--text);font-family:inherit;transition:border-color .15s,box-shadow .15s}
+  input::placeholder{color:var(--muted);opacity:.75}
+  input:focus,select:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,168,83,.16)}
+  select option{background:var(--surface);color:var(--text)}
+  input[type=checkbox]{accent-color:var(--gold)}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border:0;border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:transform .12s,filter .15s,background .15s;user-select:none}
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.5}
+  .btn.block{width:100%;margin-top:16px}
+  .btn.sm{height:38px;padding:0 14px;font-size:13.5px;border-radius:10px}
+  .btn.primary{background:var(--gold-g);color:#1b1408;box-shadow:0 8px 20px rgba(212,168,83,.22)}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.success{background:linear-gradient(135deg,#3fcf8e,#22a468);color:#06210f}
+  .btn.outline{background:transparent;color:var(--gold);box-shadow:inset 0 0 0 1.5px var(--gold)}
+  .btn.outline:hover,.btn.soft:hover{background:rgba(212,168,83,.1)}
+  .btn.soft{background:var(--surface2);color:var(--gold);box-shadow:inset 0 0 0 1px var(--line)}
+  .btn.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+  .btn.ghost:hover{background:var(--surface2)}
+  .btn.danger{color:var(--bad)}
+  .link{background:none;border:0;color:var(--gold);padding:8px 2px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
   .link:hover{text-decoration:underline}
- 
-  .err{background:#fdecea;color:var(--bad);padding:11px 14px;border-radius:12px;font-size:14px;margin-top:14px;border:1px solid #f7cfcb}
-  .okmsg{background:var(--ok-l);color:var(--ok);padding:11px 14px;border-radius:12px;font-size:14px;margin-bottom:14px;border:1px solid #c9ead8}
-  .auth{max-width:420px;margin:24px auto}
-  .brand{text-align:center;margin-bottom:18px}
-  .brand .logo{width:64px;height:64px;border-radius:20px;background:var(--brand-g);color:#fff;font-size:30px;display:grid;place-items:center;margin:0 auto 12px;box-shadow:0 12px 26px rgba(212,32,47,.35)}
-  .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#fbd9de;padding:5px;border-radius:14px}
-  .seg button{height:42px;border:0;border-radius:10px;background:transparent;color:#9a6a70;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
-  .seg button.on{background:#fff;color:var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.1)}
- 
-  .hero{background:var(--brand-g);color:#fff;border-radius:20px;padding:16px 18px;margin-bottom:14px;box-shadow:0 12px 28px rgba(180,20,31,.32);display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .hero .sub{font-size:13px;opacity:.9;margin-top:2px}
-  .tabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-  .tabs::-webkit-scrollbar{display:none}
-  .tabs button{flex:none;height:44px;padding:0 18px;border:0;border-radius:12px;background:#fff;color:var(--brand);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(180,20,31,.1);transition:.15s;display:inline-flex;align-items:center;gap:8px}
-  .tabs button:hover{background:var(--brand-l)}
-  .tabs button.on{background:var(--brand-g);color:#fff;box-shadow:0 6px 16px rgba(212,32,47,.32)}
-  .badge{background:var(--brand);color:#fff;font-size:12px;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:inline-grid;place-items:center;padding:0 6px}
-  .tabs button.on .badge{background:#fff;color:var(--brand)}
- 
+  .iconbtn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:.15s}
+  .iconbtn:hover{background:var(--surface2)}
+
+  .err{background:var(--bad-l);color:var(--bad);padding:12px 14px;border-radius:12px;font-size:14px;margin-top:14px;border:1px solid rgba(239,107,107,.3)}
+  .okmsg{background:var(--ok-l);color:var(--ok);padding:12px 14px;border-radius:12px;font-size:14px;margin-bottom:14px;border:1px solid rgba(76,195,138,.3)}
+
+  /* auth */
+  .auth{max-width:430px;margin:0 auto;padding:24px 0 30px}
+  .auth-top{display:flex;justify-content:flex-end;margin-bottom:10px}
+  .brand{text-align:center;margin-bottom:26px}
+  .brand .logo{width:76px;height:76px;border-radius:24px;background:var(--gold-g);color:#1b1408;display:grid;place-items:center;margin:0 auto 16px;box-shadow:0 14px 34px rgba(212,168,83,.3)}
+  .brand .logo svg{width:36px;height:36px}
+  .brand p{color:var(--muted);margin-top:6px;font-size:14px}
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface2);padding:5px;border-radius:14px;border:1px solid var(--line)}
+  .seg button{height:42px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .seg button.on{background:var(--gold-g);color:#1b1408}
+  .pw{position:relative}.pw input{padding-right:48px}
+  .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--muted);width:38px;height:38px;display:grid;place-items:center;cursor:pointer}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:20;margin:0 -16px 18px;padding:12px 16px;display:flex;align-items:center;gap:10px;background:var(--top-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .lg{width:42px;height:42px;border-radius:12px;background:var(--gold-g);color:#1b1408;display:grid;place-items:center}
+  .top .who{flex:1;min-width:0}
+  .top .who b{display:block;font-family:var(--head);letter-spacing:1px;text-transform:uppercase;font-size:17px;font-weight:600}
+  .top .who span{font-size:12px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .live{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-weight:600}
+  .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);animation:p 1.5s infinite}
+  @keyframes p{50%{opacity:.3}}
+
+  /* bottom nav */
+  .bnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:25;display:flex;gap:4px;padding:6px;background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 40px rgba(0,0,0,.28);width:min(560px,calc(100% - 24px))}
+  .bnav button{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 8px;border:0;border-radius:16px;background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+  .bnav button svg{width:22px;height:22px}
+  .bnav button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .bnav button.on{background:var(--gold-g);color:#1b1408}
+  .nb{position:absolute;top:4px;right:calc(50% - 26px);background:var(--bad);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+
+  /* search */
   .srow{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:10px}
-  .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{height:34px;padding:0 14px;border:0;border-radius:20px;background:#fff;color:#7a5a5f;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:inset 0 0 0 1.5px var(--line)}
-  .chip.on{background:var(--brand);color:#fff;box-shadow:none}
- 
-  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))}
-  .post{cursor:pointer;margin:0;transition:transform .15s,box-shadow .15s,border-color .15s}
-  .post:hover{transform:translateY(-3px);border-color:#ee9aa3;box-shadow:0 14px 30px rgba(212,32,47,.16)}
-  .post.static{cursor:default}.post.static:hover{transform:none;border-color:#f6cfd4;box-shadow:0 8px 24px rgba(180,20,31,.07)}
-  .post p{font-size:14px;color:#6d6063;margin-top:4px}
-  .ptop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
-  .rline{margin:4px 0 6px;font-size:14px}
-  .stars{color:var(--gold);letter-spacing:1px;font-size:16px}.stars i{color:#e6cfd2;font-style:normal}
-  .tag{display:inline-block;background:#fff;color:var(--brand);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin:2px 4px 2px 0;box-shadow:inset 0 0 0 1px #f2c3c9}
-  .tag.me{background:var(--ok-l);color:var(--ok);box-shadow:none}
-  .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}
+  .inwrap{position:relative}.inwrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+  .inwrap input{padding-left:44px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .chip{height:36px;padding:0 14px;border:0;border-radius:20px;background:var(--surface2);color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:inset 0 0 0 1px var(--line);display:inline-flex;align-items:center;gap:6px}
+  .chip svg{width:15px;height:15px}
+  .chip.on{background:var(--gold);color:#1b1408;box-shadow:none}
+
+  /* post cards */
+  .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr))}
+  .post{padding:0;overflow:hidden;margin:0;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}
+  .post:hover{transform:translateY(-4px);border-color:rgba(212,168,83,.55);box-shadow:0 20px 44px rgba(0,0,0,.22)}
+  .post.static{cursor:default}.post.static:hover{transform:none;border-color:var(--line);box-shadow:var(--card-shadow)}
+  .coverwrap{position:relative;height:176px;overflow:hidden;background:var(--surface2)}
+  .cover{position:absolute;inset:0;background-size:cover;background-position:center}
+  .cover.art{display:grid;place-items:center;background:linear-gradient(135deg,hsl(var(--h) 28% 22%),hsl(var(--h) 30% 11%))}
+  .cover.art svg{width:92px;height:92px;color:hsl(var(--h) 60% 65%);opacity:.25;transform:rotate(-14deg)}
+  .cover.art::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent 0 22px,rgba(255,255,255,.03) 22px 44px)}
+  .cov-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 40%,rgba(0,0,0,.72) 100%)}
+  .cov-top{position:absolute;left:12px;right:12px;top:12px;display:flex;gap:6px;align-items:center}
+  .cov-top .sp{flex:1}
+  .cov-bot{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+  .rbadge{display:inline-flex;align-items:center;gap:5px;background:rgba(14,13,12,.75);backdrop-filter:blur(8px);padding:5px 10px;border-radius:20px;font-size:13px;font-weight:700;color:#e3bd6a;border:1px solid rgba(255,255,255,.08)}
+  .rbadge small{color:#cfc7ba;font-weight:500}
+  .dbadge{background:rgba(14,13,12,.75);backdrop-filter:blur(8px);padding:5px 10px;border-radius:20px;font-size:12px;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.08)}
+  .fav{width:38px;height:38px;border-radius:50%;border:0;background:rgba(14,13,12,.68);backdrop-filter:blur(8px);color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .12s}
+  .fav:active{transform:scale(.9)}
+  .fav.on{color:#ff6b7d}.fav.on svg{fill:#ff6b7d}
+  .pbody{padding:16px 18px 18px}
+  .pbody h3{margin-bottom:8px}
+  .meta{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--meta-txt);margin-top:6px}
+  .meta svg{width:16px;height:16px;color:var(--gold);margin-top:2px}
+  .meta a{color:var(--gold);font-weight:600;text-decoration:none;margin-left:6px;font-size:12.5px}
+  .tag{display:inline-block;background:var(--surface2);color:var(--muted);font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;margin:2px 4px 2px 0;border:1px solid var(--line)}
+  .tag.on{color:var(--gold);border-color:rgba(212,168,83,.45)}
+  .tag.me{background:var(--ok-l);color:var(--ok);border-color:transparent}
+  .tag.top{background:var(--gold-g);color:#1b1408;border:0}
+  .svc{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .svc .h{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .svc .s{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0}
+  .svc .s b{color:var(--gold);font-weight:600;white-space:nowrap}
+  .manage{display:flex;gap:10px;margin-top:16px}.manage .btn{flex:1}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
   .pill.pending{background:var(--warn-l);color:var(--warn)}
   .pill.confirmed,.pill.done{background:var(--ok-l);color:var(--ok)}
-  .pill.rejected,.pill.cancelled{background:#fdecea;color:var(--bad)}
-  .manage{display:flex;gap:10px;margin-top:14px}
-  .manage .btn{flex:1}
-  .days{display:flex;flex-wrap:wrap;gap:8px}
-  .days label{margin:0;display:flex;align-items:center;gap:7px;background:#fff;padding:0 14px;height:42px;border-radius:10px;color:var(--text);cursor:pointer;font-weight:500;border:1.5px solid var(--line)}
-  .days label:has(input:checked){background:var(--brand-l);border-color:var(--brand);color:var(--brand)}
-  .days input{width:auto;height:auto;accent-color:var(--brand)}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .sec{margin-top:18px;padding-top:6px;border-top:1px dashed #efbcc3}
-  .locrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  .pill.rejected,.pill.cancelled{background:var(--bad-l);color:var(--bad)}
 
-  .service-item{display:grid;grid-template-columns:1fr 120px auto;gap:8px;margin-bottom:8px;align-items:center}
-  .service-check{display:flex;align-items:center;justify-content:space-between;background:#fff;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);margin-bottom:6px;cursor:pointer}
-  .service-check input{width:auto;height:auto;accent-color:var(--brand)}
- 
+  .days{display:flex;flex-wrap:wrap;gap:8px}
+  .days label{margin:0;display:flex;align-items:center;gap:8px;background:var(--surface2);padding:0 14px;height:42px;border-radius:10px;color:var(--text);cursor:pointer;font-weight:500;font-size:14px;text-transform:none;letter-spacing:0;border:1px solid var(--line)}
+  .days label:has(input:checked){border-color:var(--gold);color:var(--gold);background:rgba(212,168,83,.1)}
+  .days input{width:auto;height:auto}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .sec{margin-top:22px;padding-top:6px;border-top:1px dashed var(--line)}
+  .locrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .service-item{display:grid;grid-template-columns:1fr 130px auto;gap:8px;margin-bottom:8px;align-items:center}
+  .service-check{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);padding:12px 14px;border-radius:12px;border:1px solid var(--line);margin-bottom:8px;cursor:pointer;font-size:14px;gap:10px}
+  .service-check:has(input:checked){border-color:var(--gold)}
+  .service-check input{width:auto;height:auto}
+  .photo{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:6px}
+  .photo .pv{width:120px;height:80px;border-radius:12px;background:var(--surface2) center/cover;border:1px dashed var(--line);display:grid;place-items:center;color:var(--muted)}
+  .photo input[type=file]{display:none}
+
   .rate{display:inline-flex;gap:2px}
-  .rate button{background:none;border:0;font-size:30px;line-height:1;color:#e6cfd2;cursor:pointer;padding:2px 3px;transition:transform .1s}
+  .rate button{background:none;border:0;font-size:32px;line-height:1;color:var(--star-off);cursor:pointer;padding:2px 3px;transition:transform .1s}
   .rate button.on{color:var(--gold)}
   .rate button:hover{transform:scale(1.15)}
- 
-  .weeknav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px}
+
+  /* calendar */
+  .weeknav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .weeknav b{font-family:var(--head);letter-spacing:1px;font-size:16px}
   .cal{overflow-x:auto}
   table{border-collapse:separate;border-spacing:4px;width:100%;min-width:640px}
-  th{font-size:12px;color:var(--hint);font-weight:600;padding:4px}
-  th b{display:block;font-size:15px;color:var(--text)}
-  td.t{font-size:12px;color:var(--hint);text-align:right;padding-right:6px;white-space:nowrap}
+  th{font-size:11px;color:var(--muted);font-weight:600;padding:4px;text-transform:uppercase;letter-spacing:.6px}
+  th b{display:block;font-size:16px;color:var(--text);font-family:var(--head);letter-spacing:0}
+  td.t{font-size:12px;color:var(--muted);text-align:right;padding-right:6px;white-space:nowrap}
   .cell{background:var(--ok-l);color:var(--ok);font-weight:600;transition:.12s}
   td.cell{height:40px;text-align:center;font-size:12px;border-radius:9px}
   .cell.free{cursor:pointer}
   .cell.free:hover{background:var(--ok);color:#fff}
   td.cell.closed{background:transparent}
-  .cell.past{background:#f6e6e8;color:#c9b3b6;font-weight:400}
-  .cell.busy{background:var(--busy);color:#8b8486}
-  .cell.pend{background:var(--warn-l);color:var(--warn);box-shadow:inset 0 0 0 1.5px #f2d58e}
-  .cell.conf,.cell.mine{background:var(--brand-g);color:#fff}
+  .cell.past{background:var(--past-bg);color:var(--past-txt);font-weight:400}
+  .cell.busy{background:var(--surface3);color:var(--muted)}
+  .cell.pend{background:var(--warn-l);color:var(--warn);box-shadow:inset 0 0 0 1px rgba(229,169,61,.4)}
+  .cell.conf,.cell.mine{background:var(--gold-g);color:#1b1408}
   .cell.conf{cursor:pointer}
-  .cell.done{background:linear-gradient(180deg,#2bb56b,#198a4c);color:#fff}
-  .cell.dayoff{background:#e2d9db;color:#706569;font-weight:500;cursor:default}
-  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--hint);margin-top:12px}
-  .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-2px}
+  .cell.done{background:var(--ok-l);color:var(--ok)}
+  .cell.dayoff{background:var(--dayoff-bg);color:var(--dayoff-txt);font-weight:500}
   .desk{display:block}.mob{display:none}
-  .dchips{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
-  .dchip{border:0;border-radius:12px;background:#fff;color:#6d6063;padding:8px 0;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;box-shadow:inset 0 0 0 1.5px var(--line)}
-  .dchip b{display:block;font-size:16px;color:var(--text);margin-top:2px}
-  .dchip.on{background:var(--brand-g);color:#fff;box-shadow:0 6px 14px rgba(212,32,47,.3)}.dchip.on b{color:#fff}
-  .dchip.off{opacity:.35;cursor:default}
+  .dchips{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px}
+  .dchip{border:1px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--muted);padding:8px 0;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer;text-transform:uppercase}
+  .dchip b{display:block;font-size:17px;color:var(--text);margin-top:2px;font-family:var(--head)}
+  .dchip.on{background:var(--gold-g);color:#1b1408;border-color:transparent}.dchip.on b{color:#1b1408}
+  .dchip.off{opacity:.35}
   .mslots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .mc{border-radius:12px;padding:10px 4px;text-align:center;font-size:12px;display:flex;flex-direction:column;gap:2px;min-height:54px;justify-content:center}
+  .mc{border-radius:12px;padding:10px 4px;text-align:center;font-size:12px;display:flex;flex-direction:column;gap:2px;min-height:56px;justify-content:center}
   .mc b{font-size:15px}
- 
-  .modal{position:fixed;inset:0;background:rgba(40,8,12,.6);backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px;z-index:10;overflow:auto}
-  .modal .box{background:#fff5f6;border-radius:22px;padding:22px;width:100%;max-width:420px;box-shadow:0 30px 60px rgba(0,0,0,.3)}
-  .amount{text-align:center;margin:8px 0 14px}
-  .amount b{display:block;font-size:30px;color:var(--brand);letter-spacing:-.5px}
-  .amount span{font-size:13px;color:var(--hint)}
-  .ccard{background:linear-gradient(135deg,#e0303f 0%,#a8111b 100%);border-radius:18px;padding:18px 18px 16px;color:#fff;box-shadow:0 14px 28px rgba(180,20,31,.35);position:relative;overflow:hidden}
-  .ccard::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.12)}
-  .ccard small{opacity:.8;font-size:11px;letter-spacing:1px;text-transform:uppercase}
-  .ccard .num{font-size:21px;font-weight:600;letter-spacing:1.5px;margin:10px 0;font-variant-numeric:tabular-nums}
-  .ccard .holder{font-size:14px;font-weight:500;opacity:.95;padding-right:100px}
-  .copy{position:absolute;right:14px;bottom:12px;z-index:1;background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:8px;height:34px;padding:0 12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
-  .copy:hover{background:rgba(255,255,255,.34)}
-  .sum .r{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(5px);display:grid;place-items:center;padding:16px;z-index:40;overflow:auto}
+  .modal .box{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:24px;width:100%;max-width:430px;box-shadow:0 30px 70px rgba(0,0,0,.4)}
+  .amount{text-align:center;margin:12px 0 16px}
+  .amount b{display:block;font-family:var(--head);font-size:34px;color:var(--gold);letter-spacing:.5px}
+  .amount span{font-size:13px;color:var(--muted)}
+  .ccard{background:linear-gradient(135deg,#2f2a23 0%,#0f0e0d 100%);border:1px solid rgba(212,168,83,.35);border-radius:20px;padding:20px 20px 18px;color:#fff;box-shadow:0 18px 36px rgba(0,0,0,.28);position:relative;overflow:hidden}
+  .ccard::after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(212,168,83,.12)}
+  .ccard small{color:#e3bd6a;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600}
+  .ccard .num{font-family:var(--head);font-size:23px;font-weight:500;letter-spacing:2px;margin:14px 0 12px;font-variant-numeric:tabular-nums}
+  .ccard .holder{font-size:14px;color:#cfc7ba;padding-right:110px;text-transform:uppercase;letter-spacing:.5px}
+  .copy{position:absolute;right:14px;bottom:14px;z-index:1;background:rgba(212,168,83,.2);color:#e3bd6a;border:0;border-radius:10px;height:36px;padding:0 12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .copy svg{width:15px;height:15px}
+  .sum .r{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
   .sum .r:last-child{border:0}
-  .sum .r span:first-child{color:var(--hint)}
-  .list .it{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .sum .r span:first-child{color:var(--muted)}
+  .list .it{display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:14px}
   .list .it:last-child{border:0}
-  .req{border:1.5px solid #f2d58e;background:#fffaf0;border-radius:16px;padding:16px;margin-bottom:12px}
+  .req{border:1px solid rgba(229,169,61,.4);background:var(--warn-l);border-radius:16px;padding:16px;margin-bottom:12px}
   .req .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
   .req .acts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-  .req .acts .btn{flex:1;min-width:150px}
-  .empty{text-align:center;color:var(--hint);padding:30px 10px}
-  .empty b{color:var(--text);font-size:18px}
-  .live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ok);font-weight:600}
-  .live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);animation:p 1.5s infinite}
-  @keyframes p{50%{opacity:.3}}
-  #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,30px);background:#2a2325;color:#fff;padding:13px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 12px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.25s;z-index:30;max-width:92vw;text-align:center}
+  .req .acts .btn{flex:1;min-width:140px}
+  .empty{text-align:center;color:var(--muted);padding:34px 10px}
+  .empty b{color:var(--text);font-size:18px;display:block;margin-top:10px}
+  .empty svg{width:42px;height:42px;color:var(--gold);opacity:.7}
+  .stat{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .stat .s{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .stat .s b{display:block;font-family:var(--head);font-size:28px;color:var(--gold);letter-spacing:.5px}
+  .stat .s span{font-size:12px;color:var(--muted)}
+  .splash{display:grid;place-items:center;min-height:70vh;color:var(--gold)}
+  .splash svg{width:44px;height:44px;animation:spin 1.4s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-30px);background:#2a2622;color:#fff;border:1px solid rgba(255,255,255,.1);padding:13px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 14px 34px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:92vw;text-align:center}
   #toast.show{opacity:1;transform:translate(-50%,0)}
-  #toast.ok{background:#177a45} #toast.bad{background:var(--bad)}
- 
+  #toast.ok{background:#14442e;border-color:#1f6b47}#toast.bad{background:#4a1c1c;border-color:#7a2d2d}
+
   @media(max-width:640px){
     .desk{display:none}.mob{display:block}
-    .wrap{padding:10px 10px calc(24px + env(safe-area-inset-bottom))}
-    .card{padding:15px;border-radius:16px}
-    .hero{padding:14px;border-radius:18px}
-    h1{font-size:19px}
-    .srow{grid-template-columns:1fr}
-    .srow .btn{width:100%}
-    .row2{grid-template-columns:1fr;gap:0}
-    .row2.keep{grid-template-columns:1fr 1fr;gap:10px}
+    .wrap{padding:0 12px calc(104px + env(safe-area-inset-bottom))}
+    .top{margin:0 -12px 16px;padding:10px 12px}
+    .card{padding:16px;border-radius:16px}
+    .srow{grid-template-columns:1fr}.srow .btn{width:100%}
+    .row2{grid-template-columns:1fr;gap:0}.row2.keep{grid-template-columns:1fr 1fr;gap:10px}
     .manage{flex-direction:column}
     .req .acts .btn{min-width:100%}
     .modal{align-items:end;padding:0}
-    .modal .box{border-radius:22px 22px 0 0;max-width:none;max-height:92vh;overflow:auto;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
-    .ccard .num{font-size:19px;letter-spacing:1px}
-    .list .it{flex-direction:column;gap:6px}
-    .list .it>div:last-child{text-align:left!important}
-    .weeknav .btn{padding:0 10px}
-    .days label{padding:0 11px}
+    .modal .box{border-radius:24px 24px 0 0;max-width:none;max-height:92vh;overflow:auto;padding:22px 16px calc(22px + env(safe-area-inset-bottom))}
+    .ccard .num{font-size:20px;letter-spacing:1.2px}
+    .list .it{flex-direction:column;gap:6px}.list .it>div:last-child{text-align:left!important}
     .service-item{grid-template-columns:1fr 100px auto}
   }
 </style>
 </head>
 <body>
-<div class="wrap" id="app"></div>
+<div class="wrap" id="app"><div class="splash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></div></div>
 <div id="toast"></div>
- 
+
 <script>
+const THEME_KEY = 'bs_theme';
+function applyTheme(t){
+  const isLight = t === 'light';
+  document.documentElement.classList.toggle('light', isLight);
+  const bg = isLight ? '#f5f3ef' : '#0e0d0c';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg);
+  try{ Telegram.WebApp.setHeaderColor(bg); Telegram.WebApp.setBackgroundColor(bg); }catch(e){}
+}
+function toggleTheme(){
+  const next = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+  render();
+}
+const isLightTheme = () => document.documentElement.classList.contains('light');
+applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+
 try{Telegram.WebApp.ready();Telegram.WebApp.expand();}catch(e){}
- 
+
 const SES = 'bs_session';
 const API_URL = 'https://beckenduz.onrender.com/api/db';
-const ADMIN_LOGIN = 'norboyevblog'; // Maxfiy admin logini
-const ADMIN_PASS = '12213443';    // Admin paroli
+const ADMIN_LOGIN = 'norboyevblog';
+const ADMIN_PASS = '12213443';
 
 const empty = () => ({ users: [], posts: {}, bookings: [], ratings: [], dayOffs: {}, favorites: {}, settings: { monthlyFee: 10000, adminCard: '8600000000000000', adminCardHolder: 'Admin' }, subRequests: [], expenses: 0 });
 let CACHED_DB = empty();
@@ -205,7 +286,7 @@ let CACHED_DB = empty();
 async function loadAsync() {
   try {
     let res = await fetch(API_URL);
-    if (!res.ok) return empty();
+    if (!res.ok) throw new Error('bad');
     let d = await res.json();
     d.users = d.users || [];
     d.posts = d.posts || {};
@@ -219,27 +300,18 @@ async function loadAsync() {
     CACHED_DB = d;
     return d;
   } catch (e) {
-    return CACHED_DB || empty();
+    return CACHED_DB;
   }
 }
-
 function load() { return CACHED_DB; }
-
 async function saveAsync(db) {
   CACHED_DB = db;
   try {
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: db })
-    });
-  } catch (e) {
-    console.error("Baza saqlashda xatolik:", e);
-  }
+    await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: db }) });
+  } catch (e) { console.error("Baza saqlashda xatolik:", e); }
 }
-
 function save(db) { saveAsync(db); }
- 
+
 async function hash(s){
   if(window.crypto&&crypto.subtle){
     const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
@@ -247,9 +319,10 @@ async function hash(s){
   }
   return 'p:'+s;
 }
- 
+
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const js=s=>esc(String(s??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"));
 const pad=n=>String(n).padStart(2,'0');
 const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const money=n=>Number(n).toLocaleString('ru-RU')+" so'm";
@@ -259,13 +332,13 @@ const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
 const fromMin=m=>`${pad(Math.floor(m/60))}:${pad(m%60)}`;
 const fmtCard=s=>String(s||'').replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim();
 const fmtDate=ds=>{const d=new Date(ds+'T00:00');return `${DAYS[(d.getDay()+6)%7]}, ${ds.slice(8)}.${ds.slice(5,7)}.${ds.slice(0,4)}`};
-const STATUS={pending:'Tasdiqlash kutilmoqda',confirmed:'Tasdiqlandi',done:'Soch olindi ✅',rejected:"To'lanmagan",cancelled:'Bekor qilindi'};
+const STATUS={pending:'Tasdiqlash kutilmoqda',confirmed:'Tasdiqlandi',done:'Soch olindi',rejected:"To'lanmagan",cancelled:'Bekor qilindi'};
 const st=b=>b.status||'confirmed';
 const active=b=>st(b)==='pending'||st(b)==='confirmed';
 const deposit=b=>b.deposit??b.paid??b.price/2;
 function weekStart(off){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7)+off*7);return d}
 function slotTimes(p){const out=[];for(let m=toMin(p.from);m+p.slot<=toMin(p.to);m+=p.slot)out.push(fromMin(m));return out}
- 
+
 const DISTRICTS={"Bektemir":[41.2096,69.3344],"Chilonzor":[41.2756,69.2035],"Mirobod":[41.2900,69.2850],"Mirzo Ulug'bek":[41.3370,69.3350],
   "Olmazor":[41.3520,69.2300],"Sergeli":[41.2260,69.2200],"Shayxontohur":[41.3280,69.2290],"Uchtepa":[41.2970,69.1630],
   "Yakkasaroy":[41.2886,69.2530],"Yashnobod":[41.2870,69.3320],"Yunusobod":[41.3680,69.2900],"Yangihayot":[41.2600,69.1500]};
@@ -278,625 +351,357 @@ function isSubActive(p){
   const until = p.subUntil || (Date.now() + 30*24*3600*1000);
   return until > Date.now();
 }
- 
+
+const ic=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const IC={
-  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
-  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
-  wallet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M2 10h20M16 15h2"/></svg>',
-  save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>',
-  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>',
-  in:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>',
-  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6"/></svg>',
-  key:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M17 6l3 3M14 9l2 2"/></svg>',
-  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
-  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>',
-  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
-  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>',
-  scissors:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>'
+  check:ic('<path d="M20 6 9 17l-5-5"/>'),
+  x:ic('<path d="M18 6 6 18M6 6l12 12"/>'),
+  wallet:ic('<rect x="2" y="6" width="20" height="14" rx="3"/><path d="M2 10h20M16 15h2"/>'),
+  save:ic('<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>'),
+  out:ic('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'),
+  in:ic('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>'),
+  user:ic('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>'),
+  key:ic('<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M17 6l3 3M14 9l2 2"/>'),
+  search:ic('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>'),
+  pin:ic('<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>'),
+  edit:ic('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'),
+  trash:ic('<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/>'),
+  scissors:ic('<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/>'),
+  calendar:ic('<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>'),
+  phone:ic('<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'),
+  clock:ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+  heart:ic('<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>'),
+  camera:ic('<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>'),
+  chart:ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+  users:ic('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>'),
+  trend:ic('<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>'),
+  eye:ic('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'),
+  eyeoff:ic('<path d="M17.9 17.9A10.9 10.9 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2M1 1l22 22"/>'),
+  plus:ic('<path d="M12 5v14M5 12h14"/>'),
+  back:ic('<path d="M15 18l-6-6 6-6"/>'),
+  copy:ic('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>'),
+  card:ic('<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/>'),
+  star:ic('<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>'),
+  list:ic('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),
+  lock:ic('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
+  unlock:ic('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>'),
+  sun:ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+  moon:ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>')
 };
- 
+
+const themeBtn = () => `<button class="iconbtn" onclick="toggleTheme()" title="${isLightTheme()?'Tungi rejim':'Kunduzgi rejim'}">${isLightTheme()?IC.moon:IC.sun}</button>`;
+
 let toastT;
-function toast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='show '+type;clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3800)}
- 
+function toast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='show '+type;clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3600)}
+
 const S={mode:'login',role:'mijoz',user:null,tab:null,viewing:null,week:0,day:null,modal:null,msg:null,err:null,draft:null,editing:false,
-  q:'',dist:'',sort:'rating',pos:null, selectedServices:[], onlyFav:false, showForgotModal:false, showPass:false, resetModalUser:null, showNewPass:false};
- 
+  q:'',dist:'',sort:'rating',pos:null,selectedServices:[],onlyFav:false,showForgotModal:false,showPass:false,resetModalUser:null,showNewPass:false};
+
 function currentUser(){
   const l=localStorage.getItem(SES); if(!l)return null;
   if(l === ADMIN_LOGIN) return {login: ADMIN_LOGIN, name: 'Admin', role: 'admin', phone: ADMIN_LOGIN};
   return load().users.find(u=>u.login===l)||null;
 }
-S.user=currentUser();
-if(S.user){
-  if(S.user.login === ADMIN_LOGIN) S.tab='admin_stat';
-  else S.tab=S.user.role==='sartarosh'?'post':'all';
-}
+const firstTab=u=>u.login===ADMIN_LOGIN?'admin_stat':(u.role==='sartarosh'?'post':'all');
 const pendingCount=()=>S.user&&S.user.role==='sartarosh'?load().bookings.filter(b=>b.barber===S.user.login&&st(b)==='pending').length:0;
-let lastPending=pendingCount();
+let lastPending=0;
 const formOpen=()=>!!S.user&&S.user.role==='sartarosh'&&S.tab==='post'&&!S.viewing&&(S.editing||!load().posts[S.user.login]);
- 
+
+/* ---------- AUTH ---------- */
 function authView(){
-  return `<div class="auth"><div class="brand"><div class="logo">✂</div><h1>Sartaroshxona</h1><div class="hint">Onlayn yozilish platformasi</div></div>
-  <div class="card"><h2>${S.mode==='register'?"Ro'yxatdan o'tish":'Kirish'}</h2>
+  return `<div class="auth">
+  <div class="auth-top">${themeBtn()}</div>
+  <div class="brand"><div class="logo">${IC.scissors}</div><h1>Sartaroshxona</h1><p>Navbat kutmang — vaqtni oldindan band qiling</p></div>
+  <div class="card" style="padding:22px"><h2>${S.mode==='register'?"Ro'yxatdan o'tish":'Kirish'}</h2>
   <div class="seg">
-     <button class="${S.role==='sartarosh'?'on':''}" onclick="setRole('sartarosh')">✂ Sartarosh</button>
-     <button class="${S.role==='mijoz'?'on':''}" onclick="setRole('mijoz')">👤 Mijoz</button></div>
+     <button class="${S.role==='sartarosh'?'on':''}" onclick="setRole('sartarosh')">${IC.scissors}Sartarosh</button>
+     <button class="${S.role==='mijoz'?'on':''}" onclick="setRole('mijoz')">${IC.user}Mijoz</button></div>
   <label>Telefon raqam</label>
   <input id="a_phone" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="+998 90 123 45 67">
-  
   <label>Parol ${S.mode==='register'?'(kamida 6 ta belgi)':''}</label>
-  <div style="position:relative">
-    <input id="a_pass" type="${S.showPass?'text':'password'}" autocomplete="new-password" style="padding-right:45px" placeholder="••••••">
-    <button type="button" onclick="toggleShowPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;padding:4px" title="Parolni ko'rsatish/yashirish">${S.showPass?'🙈':'👁️'}</button>
-  </div>
-
+  <div class="pw"><input id="a_pass" type="${S.showPass?'text':'password'}" autocomplete="new-password" placeholder="••••••">
+    <button type="button" onclick="toggleShowPass()" title="Parolni ko'rsatish">${S.showPass?IC.eyeoff:IC.eye}</button></div>
   ${S.err?`<div class="err">${esc(S.err)}</div>`:''}${S.msg?`<div class="okmsg" style="margin:14px 0 0">${esc(S.msg)}</div>`:''}
   <button class="btn primary block" onclick="${S.mode==='register'?'doRegister()':'doLogin()'}">${S.mode==='register'?IC.user+"Ro'yxatdan o'tish":IC.in+'Kirish'}</button>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap">
    <button class="link" onclick="openForgotModal()">Parolni unutdingizmi?</button>
-   ${S.mode==='register'?`<button class="link" onclick="go('login')">Kirish</button>`:
-     `<button class="link" onclick="go('register')">Ro'yxatdan o'tish</button>`}
-  </div></div></div>
+   ${S.mode==='register'?`<button class="link" onclick="go('login')">Kirish</button>`:`<button class="link" onclick="go('register')">Ro'yxatdan o'tish</button>`}
+  </div>
+  </div></div>
   ${S.showForgotModal ? forgotModalView() : ''}`;
 }
-
-function toggleShowPass(){
-  S.showPass = !S.showPass;
-  render();
-}
-
-function toggleShowNewPass(){
-  S.showNewPass = !S.showNewPass;
-  render();
-}
-
-function openForgotModal(){ S.showForgotModal=true; render(); }
-function closeForgotModal(){ S.showForgotModal=false; render(); }
-
+function toggleShowPass(){S.showPass=!S.showPass;render()}
+function toggleShowNewPass(){S.showNewPass=!S.showNewPass;render()}
+function openForgotModal(){S.showForgotModal=true;render()}
+function closeForgotModal(){S.showForgotModal=false;render()}
 function forgotModalView(){
   return `<div class="modal" onclick="if(event.target===this){closeForgotModal()}"><div class="box">
     <h2>Parolni tiklash</h2>
-    <p style="margin:10px 0;font-size:14px;color:var(--text)">Parolni tiklash uchun adminga Telegram orqali murojaat qiling:</p>
-    <div style="background:var(--brand-l);color:var(--brand);padding:12px;border-radius:12px;font-weight:700;text-align:center;font-size:16px;margin:12px 0">
-      @norboyevadmen
-    </div>
+    <p style="margin:6px 0 14px;font-size:14px;color:var(--muted)">Parolni tiklash uchun adminga Telegram orqali murojaat qiling:</p>
+    <div style="background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.35);color:var(--gold);padding:14px;border-radius:14px;font-weight:700;text-align:center;font-size:17px">@norboyevadmen</div>
     <button class="btn primary block" onclick="closeForgotModal()">Tushunarli</button>
   </div></div>`;
 }
-
 function go(m){S.mode=m;S.err=null;S.msg=null;render()}
 function setRole(r){S.role=r;S.err=null;render()}
 const val=id=>($(id)?.value||'').trim();
- 
+
 async function doRegister(){
   const phone=val('a_phone'), pass=val('a_pass');
   if(phone.length<9)return fail("Telefon raqamni to'g'ri kiriting");
   if(pass.length<6)return fail("Parol kamida 6 ta belgi bo'lishi kerak");
   const db=load();
   if(db.users.some(u=>u.login===phone))return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
-  
-  const newUser = {login: phone, pass: await hash(pass), role: S.role, name: S.role==='sartarosh' ? 'Sartarosh' : 'Mijoz', phone: phone};
-  db.users.push(newUser);
+  db.users.push({login:phone,pass:await hash(pass),role:S.role,name:S.role==='sartarosh'?'Sartarosh':'Mijoz',phone});
   save(db);
-  S.mode='login'; S.err=null; S.msg="Muvaffaqiyatli ro'yxatdan o'tdingiz! Endi kiring."; render();
+  S.mode='login';S.err=null;S.msg="Muvaffaqiyatli ro'yxatdan o'tdingiz! Endi kiring.";render();
 }
-
 async function doLogin(){
   const loginInput=val('a_phone'), pass=val('a_pass');
-  
-  if(loginInput.toLowerCase() === ADMIN_LOGIN) {
-    if(pass !== ADMIN_PASS) return fail("Telefon raqam yoki parol noto'g'ri");
-    localStorage.setItem(SES, ADMIN_LOGIN);
-    Object.assign(S, {user: {login: ADMIN_LOGIN, name: 'Admin', role: 'admin', phone: ADMIN_LOGIN}, tab: 'admin_stat', viewing: null, err: null, msg: null, draft: null, editing: false, week: 0, day: null, modal: null});
-    render();
-    return;
+  if(loginInput.toLowerCase()===ADMIN_LOGIN){
+    if(pass!==ADMIN_PASS)return fail("Telefon raqam yoki parol noto'g'ri");
+    localStorage.setItem(SES,ADMIN_LOGIN);
+    Object.assign(S,{user:{login:ADMIN_LOGIN,name:'Admin',role:'admin',phone:ADMIN_LOGIN},tab:'admin_stat',viewing:null,err:null,msg:null,draft:null,editing:false,week:0,day:null,modal:null});
+    return render();
   }
-
   const db=load();
-  const u=db.users.find(x=>x.login===loginInput || normPhone(x.login)===normPhone(loginInput));
+  const u=db.users.find(x=>x.login===loginInput||normPhone(x.login)===normPhone(loginInput));
   if(!u||u.pass!==await hash(pass))return fail("Telefon raqam yoki parol noto'g'ri");
-  
-  if(u.role !== S.role) {
-    return fail(`Bu raqam "${u.role}" sifatida ro'yxatdan o'tgan. Rolni to'g'ri tanlang`);
-  }
-
+  if(u.role!==S.role)return fail(`Bu raqam "${u.role}" sifatida ro'yxatdan o'tgan. Rolni to'g'ri tanlang`);
   localStorage.setItem(SES,u.login);
-  Object.assign(S,{user:u,tab:u.role==='sartarosh'?'post':'all',viewing:null,err:null,msg:null,draft:null,editing:false,week:0,day:null,modal:null}); render();
+  Object.assign(S,{user:u,tab:firstTab(u),viewing:null,err:null,msg:null,draft:null,editing:false,week:0,day:null,modal:null});render();
 }
-
 function fail(m){S.err=m;S.msg=null;render()}
 function logout(){localStorage.removeItem(SES);Object.assign(S,{user:null,viewing:null,modal:null,draft:null,editing:false,mode:'login',q:'',dist:'',sort:'rating',pos:null,onlyFav:false});render()}
- 
+
+/* ---------- APP SHELL ---------- */
 function appView(){
-  const u=S.user, isAdmin=(u.login === ADMIN_LOGIN || u.role === 'admin'), isB=u.role==='sartarosh', pc=pendingCount();
-  
-  let tabs = [];
-  if(isAdmin){
-    tabs = [
-      ['admin_stat', '📊 1. Statistika'],
-      ['admin_pay', '💳 2. Oylik toʻlovlar & Eʻlonlar'],
-      ['admin_users', '📋 3. Foydalanuvchilar'],
-      ['admin_crm', '📈 4. CRM Hisob-kitob']
-    ];
-  } else if(isB){
-    tabs = [
-      ['post', "✏️ E'lonim"],
-      ['cal', `📅 Kalendarim${pc?`<span class="badge">${pc}</span>`:''}`],
-      ['all', "📋 Barcha e'lonlar"],
-      ['sub_pay', "💳 Obuna to'lovi"]
-    ];
-  } else {
-    tabs = [['all',"🔎 E'lonlar"],['mine','🗓 Yozuvlarim']];
-  }
+  const u=S.user,isAdmin=(u.login===ADMIN_LOGIN||u.role==='admin'),isB=u.role==='sartarosh',pc=pendingCount();
+  let tabs=[];
+  if(isAdmin) tabs=[['admin_stat','chart','Statistika'],['admin_pay','wallet',"To'lovlar"],['admin_users','users','Foydalanuvchi'],['admin_crm','trend','CRM']];
+  else if(isB) tabs=[['post','edit',"E'lonim"],['cal','calendar','Kalendar',pc],['all','search',"E'lonlar"],['sub_pay','wallet','Obuna']];
+  else tabs=[['all','search',"E'lonlar"],['mine','calendar','Yozuvlarim']];
 
   let body='';
   if(isAdmin){
-    if(S.tab==='admin_stat') body=adminStatView();
-    else if(S.tab==='admin_pay') body=adminPayView();
-    else if(S.tab==='admin_users') body=adminUsersView();
-    else if(S.tab==='admin_crm') body=adminCrmView();
-    else body=adminStatView();
-  } else if(S.viewing) {
-    body=detailView(S.viewing);
-  } else if(S.tab==='post') {
-    body=myPostTab();
-  } else if(S.tab==='cal') {
-    body=myCalendar();
-  } else if(S.tab==='all') {
-    body=allPosts();
-  } else if(S.tab==='mine') {
-    body=myBookings();
-  } else if(S.tab==='sub_pay') {
-    body=subPayTab();
-  } else {
-    body=allPosts();
-  }
+    body=S.tab==='admin_pay'?adminPayView():S.tab==='admin_users'?adminUsersView():S.tab==='admin_crm'?adminCrmView():adminStatView();
+  } else if(S.viewing) body=detailView(S.viewing);
+  else if(S.tab==='post') body=myPostTab();
+  else if(S.tab==='cal') body=myCalendar();
+  else if(S.tab==='mine') body=myBookings();
+  else if(S.tab==='sub_pay') body=subPayTab();
+  else body=allPosts();
 
-  return `<div class="hero"><div><h1>✂ Sartaroshxona</h1><div class="sub">${esc(u.name)} · ${isAdmin?'Admin':u.role} · <span class="live">jonli</span></div></div>
-    <button class="btn glass sm" onclick="logout()">${IC.out}Chiqish</button></div>
-    <div class="tabs">${tabs.map(([k,t])=>`<button class="${S.tab===k&&!S.viewing?'on':''}" onclick="setTab('${k}')">${t}</button>`).join('')}</div>
-    ${body}${S.modal?payModal():''}
-    ${S.resetModalUser ? resetPasswordModalView() : ''}`;
+  const roleName=isAdmin?'Admin':isB?'Sartarosh':'Mijoz';
+  return `<div class="top"><div class="lg">${IC.scissors}</div>
+    <div class="who"><b>Sartaroshxona</b><span>${esc(u.phone||u.name)} · ${roleName} · <span class="live">jonli</span></span></div>
+    ${themeBtn()}
+    <button class="iconbtn" onclick="logout()" title="Chiqish">${IC.out}</button></div>
+    ${body}${S.modal?payModal():''}${S.resetModalUser?resetPasswordModalView():''}
+    <nav class="bnav">${tabs.map(([k,i,t,b])=>`<button class="${S.tab===k&&!S.viewing?'on':''}" onclick="setTab('${k}')">${IC[i]}<span>${t}</span>${b?`<i class="nb">${b}</i>`:''}</button>`).join('')}</nav>`;
 }
+function setTab(t){S.tab=t;S.viewing=null;S.week=0;S.day=null;S.msg=null;S.err=null;if(t!=='post'){S.editing=false;S.draft=null}render();window.scrollTo({top:0})}
 
-function setTab(t){S.tab=t;S.viewing=null;S.week=0;S.day=null;S.msg=null;S.err=null;if(t!=='post'){S.editing=false;S.draft=null}render()}
-
-/* --- ADMIN MENYULARI --- */
-
+/* ---------- ADMIN ---------- */
 function adminStatView(){
-  const db=load();
-  const users=db.users||[];
-  const customers = users.filter(u => u.role === 'mijoz');
-  const barbers = users.filter(u => u.role === 'sartarosh');
-  const posts=Object.entries(db.posts||{});
-  const bookings=db.bookings||[];
-  
-  let expiredCount = 0;
-  let activeCount = 0;
-  posts.forEach(([login, p]) => {
-    if(isSubActive(p) && !p.isSuspended) activeCount++;
-    else expiredCount++;
-  });
-
-  return `<div class="card">
-    <h2>📊 1. Statistika</h2>
-    <div class="sum" style="margin-top:12px">
-      <div class="r"><span>Jami foydalanuvchilar</span><span><b>${users.length} ta</b></span></div>
-      <div class="r"><span>Foydalanuvchi mijozlar</span><span><b>${customers.length} ta</b></span></div>
-      <div class="r"><span>Foydalanuvchi sartaroshlar</span><span><b>${barbers.length} ta</b></span></div>
-      <div class="r"><span>Jami buyurtmalar</span><span><b>${bookings.length} ta</b></span></div>
-      <div class="r"><span>Faol e'lonlar (obunasi bor)</span><span style="color:var(--ok)"><b>${activeCount} ta</b></span></div>
-      <div class="r"><span>Muddati tugagan / To'xtatilgan e'lonlar</span><span style="color:var(--bad)"><b>${expiredCount} ta</b></span></div>
-    </div>
-  </div>`;
+  const db=load(),users=db.users||[],posts=Object.entries(db.posts||{});
+  const customers=users.filter(u=>u.role==='mijoz'),barbers=users.filter(u=>u.role==='sartarosh'),bookings=db.bookings||[];
+  let activeCount=0,expiredCount=0;
+  posts.forEach(([l,p])=>{if(isSubActive(p)&&!p.isSuspended)activeCount++;else expiredCount++});
+  return `<div class="card"><h2>Statistika</h2>
+    <div class="stat">
+      <div class="s"><b>${users.length}</b><span>Jami foydalanuvchilar</span></div>
+      <div class="s"><b>${customers.length}</b><span>Mijozlar</span></div>
+      <div class="s"><b>${barbers.length}</b><span>Sartaroshlar</span></div>
+      <div class="s"><b>${bookings.length}</b><span>Jami buyurtmalar</span></div>
+      <div class="s"><b style="color:var(--ok)">${activeCount}</b><span>Faol e'lonlar</span></div>
+      <div class="s"><b style="color:var(--bad)">${expiredCount}</b><span>Muddati tugagan / to'xtatilgan</span></div>
+    </div></div>`;
 }
-
 function adminPayView(){
-  const db=load();
-  const currentFee = db.settings?.monthlyFee || 10000;
-  const adminCard = db.settings?.adminCard || '8600000000000000';
-  const adminHolder = db.settings?.adminCardHolder || 'Admin';
-  const posts = Object.entries(db.posts || {});
-  const subReqs = db.subRequests || [];
-
+  const db=load(),fee=db.settings?.monthlyFee||10000,card=db.settings?.adminCard||'8600000000000000',holder=db.settings?.adminCardHolder||'Admin';
+  const posts=Object.entries(db.posts||{}),subReqs=db.subRequests||[];
   return `
-  <div class="card">
-    <h2>💳 2. Oylik to'lov va Admin kartasi</h2>
-    <div class="row2" style="margin-top:12px">
-      <div>
-        <label>Sartaroshlar uchun oylik obuna narxi</label>
-        <input id="admin_monthly_fee" type="number" inputmode="numeric" value="${currentFee}">
-      </div>
-      <div>
-        <label>Admin karta raqami</label>
-        <input id="admin_card_num" value="${esc(adminCard)}" placeholder="8600...">
-      </div>
-    </div>
-    <label style="margin-top:10px">Karta egasining F.I.O</label>
-    <input id="admin_card_holder" value="${esc(adminHolder)}" placeholder="Ism Familiya">
-    <button class="btn primary block" style="margin-top:12px" onclick="updateAdminSettings()">Sozlamalarni saqlash</button>
-  </div>
-
-  <div class="card">
-    <h2>⏳ Sartaroshlardan tushgan to'lov so'rovlari (${subReqs.length})</h2>
-    <div class="list">
-      ${subReqs.length ? subReqs.map(req => {
-        const p = db.posts[req.barber];
-        return `
-          <div class="it" style="flex-direction:column;align-items:stretch;gap:6px">
-            <div style="display:flex;justify-content:space-between">
-              <div><b>${esc(p?.shop || req.barber)}</b><br><span class="hint">Tel: ${esc(req.barber)} · Sana: ${new Date(req.time).toLocaleString()}</span></div>
-              <div style="text-align:right"><span class="pill pending">To'lov qildim dedi</span></div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn success sm" onclick="approveSubRequest('${req.barber}')">✅ Tasdiqlash (1 oy ochish)</button>
-              <button class="btn outline sm" onclick="rejectSubRequest('${req.barber}')">❌ Rad etish / To'lanmagan</button>
-            </div>
-          </div>
-        `;
-      }).join('') : '<div class="empty">Yangi toʻlov soʻrovlari yoʻq</div>'}
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>📋 E'lonlar va obuna vaqtlarini boshqarish</h2>
-    <div class="hint" style="margin-bottom:12px">Hohlagan e'longa kun qo'shish yoki ayirish (masalan: 30 yoki -30):</div>
-    <div class="list">
-      ${posts.length ? posts.map(([login, p]) => {
-        const until = p.subUntil ? new Date(p.subUntil).toLocaleDateString() : 'Nomaʼlum';
-        const activeSub = isSubActive(p);
-        return `
-        <div class="it" style="flex-direction:column;align-items:stretch;gap:8px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start">
-            <div>
-              <b>${esc(p.shop)}</b> (${esc(p.district)} tumani)<br>
-              <span class="hint">📞 ${esc(p.phone)} · Tugash vaqti: <b>${until}</b></span><br>
-              <span class="pill ${activeSub && !p.isSuspended ? 'confirmed' : 'rejected'}" style="margin-top:4px">
-                ${p.isSuspended ? '⛔ Vaqtincha toʻxtatilgan' : (activeSub ? '✅ Obuna faol' : '⚠️ Muddati tugagan!')}
-              </span>
-            </div>
-          </div>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px">
-            <input type="number" id="days_input_${esc(login)}" value="30" style="width:100px;height:38px;font-size:14px;padding:0 8px" placeholder="Kun">
-            <button class="btn soft sm" onclick="adminAddCustomDays('${esc(login)}')">Vaqtni o'zgartirish</button>
-            <button class="btn outline sm" onclick="adminToggleSuspend('${esc(login)}')">${p.isSuspended ? '🔓 Yoqish' : '🔒 Yopish'}</button>
-            <button class="btn ghost sm" style="color:var(--bad)" onclick="adminDeletePost('${esc(login)}')">${IC.trash} O'chirish</button>
-          </div>
-        </div>
-      `;
-      }).join('') : '<div class="empty">E\'lonlar yo\'q</div>'}
-    </div>
-  </div>`;
-}
-
-function adminUsersView(){
-  const db=load();
-  const users=db.users||[];
-
-  return `<div class="card">
-    <h2>📋 3. Ro'yxatdan o'tgan foydalanuvchilar (Parol tiklash)</h2>
-    <div class="hint" style="margin-bottom:8px">Parolini unutgan foydalanuvchiga yangi parol o'rnatib berishingiz mumkin:</div>
-    <div class="list">
-      ${users.length ? users.map(u => `
-        <div class="it">
-          <div>
-            <b>📞 ${esc(u.phone)}</b> <span class="tag ${u.role==='sartarosh'?'me':''}">${u.role}</span><br>
-            <span class="hint">Ismi: ${esc(u.name || 'Nomaʼlum')}</span>
-          </div>
-          <div style="display:flex;gap:6px">
-            <button class="btn soft sm" onclick="openResetModal('${esc(u.login)}')">🔑 Parolni o'zgartirish</button>
-            <button class="btn ghost sm" style="color:var(--bad)" onclick="adminDeleteUser('${esc(u.login)}')">${IC.trash} O'chirish</button>
-          </div>
-        </div>
-      `).join('') : '<div class="empty">Foydalanuvchilar yo\'q</div>'}
-    </div>
-  </div>`;
-}
-
-function openResetModal(login){
-  S.resetModalUser = login;
-  S.showNewPass = false;
-  render();
-}
-
-function closeResetModal(){
-  S.resetModalUser = null;
-  render();
-}
-
-function resetPasswordModalView(){
-  const userLogin = S.resetModalUser;
-  const db = load();
-  const u = db.users.find(x => x.login === userLogin);
-  if(!u) return '';
-
-  return `<div class="modal" onclick="if(event.target===this){closeResetModal()}"><div class="box">
-    <h2>Parolni o'zgartirish</h2>
-    <p style="margin:8px 0;font-size:14px;color:var(--hint)">Foydalanuvchi: <b>${esc(u.phone)}</b></p>
-    <label>Yangi parol (kamida 6 ta belgi)</label>
-    <div style="position:relative;margin-bottom:14px">
-      <input id="new_admin_pass" type="${S.showNewPass?'text':'password'}" autocomplete="new-password" style="padding-right:45px" placeholder="••••••">
-      <button type="button" onclick="toggleShowNewPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;padding:4px">${S.showNewPass?'🙈':'👁️'}</button>
-    </div>
-    <button class="btn primary block" onclick="saveNewPassword('${esc(userLogin)}')">Saqlash</button>
-    <button class="btn ghost block" style="margin-top:10px" onclick="closeResetModal()">Bekor qilish</button>
+  <div class="card"><h2>Oylik to'lov va karta</h2>
+    <div class="row2"><div><label>Oylik obuna narxi</label><input id="admin_monthly_fee" type="number" inputmode="numeric" value="${fee}"></div>
+    <div><label>Admin karta raqami</label><input id="admin_card_num" value="${esc(card)}" placeholder="8600..."></div></div>
+    <label>Karta egasining F.I.O</label><input id="admin_card_holder" value="${esc(holder)}" placeholder="Ism Familiya">
+    <button class="btn primary block" onclick="updateAdminSettings()">${IC.save}Saqlash</button></div>
+  <div class="card"><h2>To'lov so'rovlari (${subReqs.length})</h2><div class="list">
+    ${subReqs.length?subReqs.map(req=>{const p=db.posts[req.barber];return `
+      <div class="it" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div style="display:flex;justify-content:space-between;gap:8px"><div><b>${esc(p?.shop||req.barber)}</b><br><span class="hint">${esc(req.barber)} · ${new Date(req.time).toLocaleString()}</span></div><span class="pill pending" style="align-self:flex-start">To'lov qildim</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn success sm" onclick="approveSubRequest('${js(req.barber)}')">${IC.check}Tasdiqlash (1 oy)</button>
+        <button class="btn outline sm" onclick="rejectSubRequest('${js(req.barber)}')">${IC.x}Rad etish</button></div></div>`}).join(''):'<div class="empty">Yangi to\'lov so\'rovlari yo\'q</div>'}
+  </div></div>
+  <div class="card"><h2>E'lonlar va obuna</h2><div class="hint" style="margin-bottom:10px">Kun qo'shish yoki ayirish (masalan: 30 yoki -30)</div><div class="list">
+    ${posts.length?posts.map(([login,p])=>{
+      const until=p.subUntil?new Date(p.subUntil).toLocaleDateString():'Noma\'lum',a=isSubActive(p);
+      return `<div class="it" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div><b>${esc(p.shop)}</b> <span class="hint">· ${esc(p.district)}</span><br><span class="hint">${esc(p.phone)} · Tugash: <b style="color:var(--text)">${until}</b></span><br>
+        <span class="pill ${a&&!p.isSuspended?'confirmed':'rejected'}" style="margin-top:6px">${p.isSuspended?'To\'xtatilgan':(a?'Obuna faol':'Muddati tugagan')}</span></div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <input type="number" id="days_input_${esc(login)}" value="30" style="width:90px;height:38px;font-size:14px;padding:0 8px">
+          <button class="btn soft sm" onclick="adminAddCustomDays('${js(login)}')">Vaqtni o'zgartirish</button>
+          <button class="btn outline sm" onclick="adminToggleSuspend('${js(login)}')">${p.isSuspended?IC.unlock+'Yoqish':IC.lock+'Yopish'}</button>
+          <button class="btn ghost sm danger" onclick="adminDeletePost('${js(login)}')">${IC.trash}</button></div></div>`}).join(''):'<div class="empty">E\'lonlar yo\'q</div>'}
   </div></div>`;
 }
-
+function adminUsersView(){
+  const users=load().users||[];
+  return `<div class="card"><h2>Foydalanuvchilar</h2><div class="hint" style="margin-bottom:8px">Parolini unutganlarga yangi parol o'rnating</div><div class="list">
+    ${users.length?users.map(u=>`<div class="it"><div><b>${esc(u.phone)}</b> <span class="tag ${u.role==='sartarosh'?'me':''}">${u.role}</span><br><span class="hint">${esc(u.name||'Noma\'lum')}</span></div>
+      <div style="display:flex;gap:6px"><button class="btn soft sm" onclick="openResetModal('${js(u.login)}')">${IC.key}Parol</button>
+      <button class="btn ghost sm danger" onclick="adminDeleteUser('${js(u.login)}')">${IC.trash}</button></div></div>`).join(''):'<div class="empty">Foydalanuvchilar yo\'q</div>'}
+  </div></div>`;
+}
+function openResetModal(login){S.resetModalUser=login;S.showNewPass=false;render()}
+function closeResetModal(){S.resetModalUser=null;render()}
+function resetPasswordModalView(){
+  const u=load().users.find(x=>x.login===S.resetModalUser);if(!u)return '';
+  return `<div class="modal" onclick="if(event.target===this){closeResetModal()}"><div class="box">
+    <h2>Parolni o'zgartirish</h2><p style="margin:0 0 6px;font-size:14px;color:var(--muted)">Foydalanuvchi: <b style="color:var(--text)">${esc(u.phone)}</b></p>
+    <label>Yangi parol (kamida 6 ta belgi)</label>
+    <div class="pw"><input id="new_admin_pass" type="${S.showNewPass?'text':'password'}" autocomplete="new-password" placeholder="••••••">
+    <button type="button" onclick="toggleShowNewPass()">${S.showNewPass?IC.eyeoff:IC.eye}</button></div>
+    <button class="btn primary block" onclick="saveNewPassword('${js(u.login)}')">Saqlash</button>
+    <button class="btn ghost block" style="margin-top:10px" onclick="closeResetModal()">Bekor qilish</button></div></div>`;
+}
 async function saveNewPassword(login){
-  const newPass = val('new_admin_pass');
-  if(!newPass || newPass.length < 6) return toast("Parol kamida 6 ta belgi bo'lishi kerak", "bad");
-  const db = load();
-  const u = db.users.find(x => x.login === login);
-  if(!u) return toast("Foydalanuvchi topilmadi", "bad");
-  u.pass = await hash(newPass);
-  save(db);
-  toast("Foydalanuvchi paroli muvaffaqiyatli o'zgartirildi ✅", "ok");
-  closeResetModal();
+  const np=val('new_admin_pass');
+  if(!np||np.length<6)return toast("Parol kamida 6 ta belgi bo'lishi kerak","bad");
+  const db=load(),u=db.users.find(x=>x.login===login);if(!u)return toast("Foydalanuvchi topilmadi","bad");
+  u.pass=await hash(np);save(db);toast("Parol o'zgartirildi","ok");closeResetModal();
 }
-
 function adminCrmView(){
-  const db=load();
-  const posts = Object.entries(db.posts || {});
-  const fee = db.settings?.monthlyFee || 10000;
-  
-  let activeBarbers = 0;
-  posts.forEach(([_, p]) => {
-    if(isSubActive(p)) activeBarbers++;
-  });
-
-  const totalCollected = activeBarbers * fee;
-  const expenses = db.expenses || 0;
-  const netProfit = totalCollected - expenses;
-
-  return `<div class="card">
-    <h2>📈 4. CRM Hisob-kitob</h2>
-    <div class="sum" style="margin-top:12px">
-      <div class="r"><span>Faol obunali sartaroshlar</span><span><b>${activeBarbers} ta</b></span></div>
-      <div class="r"><span>Oylik to'lov stavkasi</span><span><b>${money(fee)}</b></span></div>
-      <div class="r"><span>Jami taxminiy tushum (Obunalar)</span><span style="color:var(--ok)"><b>${money(totalCollected)}</b></span></div>
-      <div class="r"><span>Akkauntga ketadigan xarajatlar</span><span style="color:var(--bad)"><b>${money(expenses)}</b></span></div>
-      <div class="r" style="border-top:2px solid var(--line);margin-top:4px;padding-top:8px">
-        <span>Sof foyda</span><span><b style="font-size:18px;color:var(--brand)">${money(netProfit)}</b></span>
-      </div>
-    </div>
-    <div class="sec" style="margin-top:16px">
-      <label>Server/Reklama/Boshqa xarajatlar summasini kiritish</label>
-      <div class="srow">
-        <input id="crm_expense_input" type="number" inputmode="numeric" value="${expenses}" placeholder="Masalan: 50000">
-        <button class="btn primary" onclick="updateExpenses()">Saqlash</button>
-      </div>
-    </div>
-  </div>`;
+  const db=load(),posts=Object.entries(db.posts||{}),fee=db.settings?.monthlyFee||10000;
+  let a=0;posts.forEach(([_,p])=>{if(isSubActive(p))a++});
+  const total=a*fee,exp=db.expenses||0,net=total-exp;
+  return `<div class="card"><h2>CRM hisob-kitob</h2>
+    <div class="sum"><div class="r"><span>Faol obunali sartaroshlar</span><b>${a} ta</b></div>
+    <div class="r"><span>Oylik to'lov stavkasi</span><b>${money(fee)}</b></div>
+    <div class="r"><span>Taxminiy tushum</span><b style="color:var(--ok)">${money(total)}</b></div>
+    <div class="r"><span>Xarajatlar</span><b style="color:var(--bad)">${money(exp)}</b></div>
+    <div class="r"><span>Sof foyda</span><b style="font-size:20px;color:var(--gold);font-family:var(--head)">${money(net)}</b></div></div>
+    <div class="sec"><label>Server / reklama / boshqa xarajatlar</label>
+    <div class="srow"><input id="crm_expense_input" type="number" inputmode="numeric" value="${exp}" placeholder="50000"><button class="btn primary" onclick="updateExpenses()">Saqlash</button></div></div></div>`;
 }
-
 function updateExpenses(){
-  const valExp = +val('crm_expense_input');
-  if(isNaN(valExp) || valExp < 0) return toast("Summani to'g'ri kiriting", "bad");
-  const db = load();
-  db.expenses = valExp;
-  save(db);
-  toast("Xarajatlar miqdori saqlandi ✅", "ok");
-  render();
+  const v=+val('crm_expense_input');if(isNaN(v)||v<0)return toast("Summani to'g'ri kiriting","bad");
+  const db=load();db.expenses=v;save(db);toast("Xarajatlar saqlandi","ok");render();
 }
-
 function updateAdminSettings(){
-  const fee = +val('admin_monthly_fee');
-  const card = val('admin_card_num').replace(/\D/g,'');
-  const holder = val('admin_card_holder');
-  if(!fee || fee < 0) return toast("Oylik to'lovni to'g'ri kiriting", "bad");
-  if(card.length !== 16) return toast("Karta raqami 16 ta bo'lishi kerak", "bad");
-  
-  const db = load();
-  db.settings = db.settings || {};
-  db.settings.monthlyFee = fee;
-  db.settings.adminCard = card;
-  db.settings.adminCardHolder = holder;
-  save(db);
-  toast("Admin sozlamalari saqlandi ✅", "ok");
-  render();
+  const fee=+val('admin_monthly_fee'),card=val('admin_card_num').replace(/\D/g,''),holder=val('admin_card_holder');
+  if(!fee||fee<0)return toast("Oylik to'lovni to'g'ri kiriting","bad");
+  if(card.length!==16)return toast("Karta raqami 16 ta bo'lishi kerak","bad");
+  const db=load();db.settings=db.settings||{};Object.assign(db.settings,{monthlyFee:fee,adminCard:card,adminCardHolder:holder});
+  save(db);toast("Sozlamalar saqlandi","ok");render();
 }
-
-function approveSubRequest(barberLogin){
-  const db = load();
-  db.posts = db.posts || {};
-  if(db.posts[barberLogin]){
-    const current = db.posts[barberLogin].subUntil && db.posts[barberLogin].subUntil > Date.now() ? db.posts[barberLogin].subUntil : Date.now();
-    db.posts[barberLogin].subUntil = current + (30 * 24 * 3600 * 1000);
-    db.posts[barberLogin].isSuspended = false;
-  }
-  db.subRequests = (db.subRequests || []).filter(r => r.barber !== barberLogin);
-  save(db);
-  toast("To'lov tasdiqlandi, e'lon 1 oyga ochildi ✅", "ok");
-  render();
+function approveSubRequest(l){
+  const db=load();db.posts=db.posts||{};
+  if(db.posts[l]){const c=db.posts[l].subUntil&&db.posts[l].subUntil>Date.now()?db.posts[l].subUntil:Date.now();db.posts[l].subUntil=c+30*24*3600*1000;db.posts[l].isSuspended=false}
+  db.subRequests=(db.subRequests||[]).filter(r=>r.barber!==l);save(db);toast("To'lov tasdiqlandi, e'lon 1 oyga ochildi","ok");render();
 }
-
-function rejectSubRequest(barberLogin){
-  const db = load();
-  db.subRequests = (db.subRequests || []).filter(r => r.barber !== barberLogin);
-  save(db);
-  toast("So'rov rad etildi (to'lanmagan)", "bad");
-  render();
+function rejectSubRequest(l){const db=load();db.subRequests=(db.subRequests||[]).filter(r=>r.barber!==l);save(db);toast("So'rov rad etildi","bad");render()}
+function adminAddCustomDays(l){
+  const d=+val('days_input_'+l);if(isNaN(d))return toast("Kun miqdorini to'g'ri kiriting","bad");
+  const db=load();if(!db.posts[l])return;
+  const c=db.posts[l].subUntil&&db.posts[l].subUntil>Date.now()?db.posts[l].subUntil:Date.now();
+  db.posts[l].subUntil=c+d*24*3600*1000;if(db.posts[l].subUntil>Date.now())db.posts[l].isSuspended=false;
+  save(db);toast(`Obuna ${d>0?'+'+d:d} kunga o'zgartirildi`,'ok');render();
 }
+function adminToggleSuspend(l){const db=load();if(!db.posts[l])return;db.posts[l].isSuspended=!db.posts[l].isSuspended;save(db);toast(db.posts[l].isSuspended?"E'lon yopildi":"E'lon yoqildi",'ok');render()}
+function adminDeleteUser(l){if(!confirm("Bu foydalanuvchini o'chirasizmi?"))return;const db=load();db.users=db.users.filter(u=>u.login!==l);delete db.posts[l];save(db);toast("Foydalanuvchi o'chirildi","ok");render()}
+function adminDeletePost(l){if(!confirm("Bu e'lonni o'chirasizmi?"))return;const db=load();delete db.posts[l];save(db);toast("E'lon o'chirildi","ok");render()}
 
-function adminAddCustomDays(login){
-  const daysVal = +val('days_input_' + login);
-  if(isNaN(daysVal)) return toast("Kun miqdorini to'g'ri kiriting", "bad");
-  const db=load();
-  if(!db.posts[login]) return;
-  const current = db.posts[login].subUntil && db.posts[login].subUntil > Date.now() ? db.posts[login].subUntil : Date.now();
-  db.posts[login].subUntil = current + (daysVal * 24 * 3600 * 1000);
-  if(db.posts[login].subUntil > Date.now()) db.posts[login].isSuspended = false;
-  save(db);
-  toast(`Obuna vaqti ${daysVal > 0 ? '+' + daysVal : daysVal} kunga o'zgartirildi ✅`, 'ok');
-  render();
-}
-
-function adminToggleSuspend(login){
-  const db=load();
-  if(!db.posts[login]) return;
-  db.posts[login].isSuspended = !db.posts[login].isSuspended;
-  save(db);
-  toast(db.posts[login].isSuspended ? "E'lon vaqtincha yopildi" : "E'lon yoqildi ✅", 'ok');
-  render();
-}
-
-function adminDeleteUser(login){
-  if(!confirm("Bu foydalanuvchini o'chirasizmi?")) return;
-  const db=load();
-  db.users = db.users.filter(u => u.login !== login);
-  delete db.posts[login];
-  save(db);
-  toast("Foydalanuvchi o'chirildi", "ok");
-  render();
-}
-
-function adminDeletePost(login){
-  if(!confirm("Bu e'lonni o'chirasizmi?")) return;
-  const db=load();
-  delete db.posts[login];
-  save(db);
-  toast("E'lon o'chirildi", "ok");
-  render();
-}
-
-/* --- SARTAROSH OBUNA TO'LOVI MENYusi --- */
+/* ---------- BARBER: SUBSCRIPTION ---------- */
 function subPayTab(){
-  const db = load();
-  const p = db.posts[S.user.login];
-  const fee = db.settings?.monthlyFee || 10000;
-  const card = db.settings?.adminCard || '8600000000000000';
-  const holder = db.settings?.adminCardHolder || 'Admin';
-  const subUntil = p?.subUntil ? new Date(p.subUntil).toLocaleDateString() : 'Nomaʼlum';
-  const activeSub = isSubActive(p);
-  const subReqs = db.subRequests || [];
-  const hasPendingReq = subReqs.some(r => r.barber === S.user.login);
-
-  return `
-    <div class="card">
-      <h2>💳 Platforma obuna to'lovi</h2>
-      <div class="sum" style="margin-top:12px;margin-bottom:14px">
-        <div class="r"><span>Joriy obuna holati</span><span><b style="color:${activeSub?'var(--ok)':'var(--bad)'}">${activeSub ? 'Faol (' + subUntil + ' gacha)' : 'Muddati tugagan / Toʻlanmagan'}</b></span></div>
-        <div class="r"><span>Oylik to'lov miqdori</span><span><b>${money(fee)}</b></span></div>
-      </div>
-      <div class="hint" style="margin-bottom:10px">Platformadan foydalanishda davom etish uchun quyidagi admin kartasiga oylik to'lovni o'tkazing va "To'lab qo'ydim" tugmasini bosing:</div>
-      
-      <div class="ccard"><small>Admin kartasi</small><div class="num">${esc(fmtCard(card))}</div>
-        <div class="holder">${esc(holder)}</div><button class="copy" onclick="copyCard('${esc(card)}')">Nusxalash</button></div>
-
-      <div style="margin-top:16px">
-        ${hasPendingReq ? `<div class="okmsg">To'lov so'rovingiz adminga yuborildi. Tasdiqlanishi kutilmoqda ⏳</div>` :
-          `<button class="btn primary block" onclick="sendSubPaymentRequest()">💳 To'lab qo'ydim (Adminga xabar berish)</button>`}
-      </div>
-    </div>
-  `;
+  const db=load(),p=db.posts[S.user.login],fee=db.settings?.monthlyFee||10000,card=db.settings?.adminCard||'8600000000000000',holder=db.settings?.adminCardHolder||'Admin';
+  const until=p?.subUntil?new Date(p.subUntil).toLocaleDateString():'Noma\'lum',a=isSubActive(p),pend=(db.subRequests||[]).some(r=>r.barber===S.user.login);
+  return `<div class="card"><h2>Obuna to'lovi</h2>
+    <div class="sum" style="margin-bottom:14px"><div class="r"><span>Holati</span><b style="color:${a?'var(--ok)':'var(--bad)'}">${a?'Faol ('+until+' gacha)':'Muddati tugagan'}</b></div>
+    <div class="r"><span>Oylik to'lov</span><b>${money(fee)}</b></div></div>
+    <div class="hint" style="margin-bottom:12px">Platformadan foydalanishni davom ettirish uchun quyidagi kartaga oylik to'lovni o'tkazing va "To'lab qo'ydim" tugmasini bosing.</div>
+    <div class="ccard"><small>Admin kartasi</small><div class="num">${esc(fmtCard(card))}</div><div class="holder">${esc(holder)}</div><button class="copy" onclick="copyCard('${js(card)}')">${IC.copy}Nusxa</button></div>
+    ${pend?`<div class="okmsg" style="margin-top:16px;margin-bottom:0">To'lov so'rovingiz adminga yuborildi. Tasdiqlanishi kutilmoqda.</div>`:`<button class="btn primary block" onclick="sendSubPaymentRequest()">${IC.wallet}To'lab qo'ydim</button>`}</div>`;
 }
-
 function sendSubPaymentRequest(){
-  const db = load();
-  db.subRequests = db.subRequests || [];
-  if(db.subRequests.some(r => r.barber === S.user.login)) return toast("So'rovingiz allaqachon yuborilgan", "bad");
-  db.subRequests.push({berber: S.user.login, barber: S.user.login, time: Date.now()});
-  save(db);
-  toast("To'lov so'rovi adminga yuborildi ⏳", "ok");
-  render();
+  const db=load();db.subRequests=db.subRequests||[];
+  if(db.subRequests.some(r=>r.barber===S.user.login))return toast("So'rovingiz allaqachon yuborilgan","bad");
+  db.subRequests.push({barber:S.user.login,time:Date.now()});save(db);toast("To'lov so'rovi adminga yuborildi","ok");render();
 }
- 
+
+/* ---------- BARBER: POST ---------- */
 function myPostTab(){
-  const db=load(),saved=db.posts[S.user.login];
-  const activeSub = saved ? isSubActive(saved) : true;
-  const monthlyFeeAmount = db.settings?.monthlyFee || 10000;
-  
-  let subWarning = '';
-  if(saved && !activeSub){
-    subWarning = `<div class="card" style="border-color:var(--warn);background:var(--warn-l)">
-      <h3 style="color:var(--warn)">⚠️ Obuna muddati tugagan (Oylik to'lov: ${money(monthlyFeeAmount)})</h3>
-      <p style="margin-top:6px;font-size:14px">Platformadan foydalanish va e'loningiz mijozlarga ko'rinishi uchun obuna to'lovini amalga oshiring.</p>
-      <button class="btn primary sm" style="margin-top:10px" onclick="setTab('sub_pay')">💳 Obuna to'lash menyusi</button>
-    </div>`;
-  }
-
-  if(!saved||S.editing)return subWarning + postForm();
+  const db=load(),saved=db.posts[S.user.login],a=saved?isSubActive(saved):true,fee=db.settings?.monthlyFee||10000;
+  let warn='';
+  if(saved&&!a) warn=`<div class="card" style="border-color:rgba(229,169,61,.5);background:var(--warn-l)"><h3 style="color:var(--warn)">Obuna muddati tugagan (${money(fee)})</h3>
+    <p style="margin-top:6px;font-size:14px;color:var(--meta-txt)">E'loningiz mijozlarga ko'rinishi uchun obuna to'lovini amalga oshiring.</p>
+    <button class="btn primary sm" style="margin-top:12px" onclick="setTab('sub_pay')">${IC.wallet}Obuna to'lash</button></div>`;
+  if(!saved||S.editing)return warn+postForm();
   const item={login:S.user.login,p:saved,owner:S.user,r:rating(db,S.user.login),d:null};
-  return subWarning + `${S.msg?`<div class="okmsg">${esc(S.msg)}</div>`:''}${postCard(item,{static:true,own:true})}`;
+  return warn+`${S.msg?`<div class="okmsg">${esc(S.msg)}</div>`:''}${postCard(item,{static:true,own:true})}`;
 }
-
-function addServiceRow(name='', price=''){
-  const container = $('services_container');
-  if(!container) return;
-  const div = document.createElement('div');
-  div.className = 'service-item';
-  div.innerHTML = `
-    <input type="text" class="srv-name" placeholder="Xizmat nomi (masalan: Soch kesish)" value="${esc(name)}">
-    <input type="number" class="srv-price" placeholder="Narxi (so'm)" value="${price}">
-    <button type="button" class="btn ghost sm" style="color:var(--bad)" onclick="this.parentElement.remove()">✕</button>
-  `;
-  container.appendChild(div);
+function addServiceRow(name='',price=''){
+  const c=$('services_container');if(!c)return;
+  const d=document.createElement('div');d.className='service-item';
+  d.innerHTML=`<input type="text" class="srv-name" placeholder="Xizmat nomi" value="${esc(name)}"><input type="number" class="srv-price" placeholder="Narxi" value="${price}"><button type="button" class="btn ghost sm danger" onclick="this.parentElement.remove()">${IC.x}</button>`;
+  c.appendChild(d);
 }
-
 function postForm(){
   const saved=load().posts[S.user.login];
-  const p=S.draft||saved||{shop:'',address:'',phone:S.user.phone,price:'',district:'',card:'',holder:'',days:[0,1,2,3,4],from:'09:00',to:'18:00',slot:60, services:[{name:'Soch kesish', price:50000},{name:'Soqol olish', price:30000}]};
-  const hasLoc=p.lat!=null&&p.lng!=null;
-  const servicesList = p.services || [{name:'Soch kesish', price:p.price || 50000}];
-
-  setTimeout(()=>{
-    const container = $('services_container');
-    if(container && container.children.length === 0){
-      servicesList.forEach(s => addServiceRow(s.name, s.price));
-    }
-  }, 0);
-
+  const p=S.draft||saved||{shop:'',address:'',phone:S.user.phone,price:'',district:'',card:'',holder:'',days:[0,1,2,3,4],from:'09:00',to:'18:00',slot:60,services:[{name:'Soch kesish',price:50000},{name:'Soqol olish',price:30000}]};
+  const hasLoc=p.lat!=null&&p.lng!=null,list=p.services||[{name:'Soch kesish',price:p.price||50000}];
+  setTimeout(()=>{const c=$('services_container');if(c&&c.children.length===0)list.forEach(s=>addServiceRow(s.name,s.price))},0);
   return `<div class="card"><h2>${saved?"E'loningizni tahrirlash":"E'lon joylash"}</h2>
+   <label>Sartaroshxona rasmi</label>
+   <div class="photo"><div class="pv" style="${p.photo?`background-image:url('${p.photo}')`:''}">${p.photo?'':IC.camera}</div>
+     <label class="btn soft sm" style="margin:0;text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--gold)">${IC.camera}${p.photo?'Almashtirish':'Rasm yuklash'}<input type="file" accept="image/*" onchange="pickPhoto(this)"></label>
+     ${p.photo?`<button class="link" onclick="removePhoto()">O'chirish</button>`:''}</div>
    <label>Sartaroshxona nomi</label><input id="p_shop" value="${esc(p.shop)}" placeholder="Masalan: Style Barber">
-   <div class="row2"><div><label>Tuman (Toshkent shahri)</label><select id="p_dist"><option value="">Tumanni tanlang</option>${Object.keys(DISTRICTS).map(d=>`<option value="${esc(d)}" ${p.district===d?'selected':''}>${esc(d)} tumani</option>`).join('')}</select></div>
+   <div class="row2"><div><label>Tuman (Toshkent)</label><select id="p_dist"><option value="">Tumanni tanlang</option>${Object.keys(DISTRICTS).map(d=>`<option value="${esc(d)}" ${p.district===d?'selected':''}>${esc(d)} tumani</option>`).join('')}</select></div>
    <div><label>Manzil</label><input id="p_addr" value="${esc(p.address)}" placeholder="Ko'cha, uy, mo'ljal"></div></div>
-   <div class="locrow">${hasLoc?`<span class="tag me">✅ Aniq joylashuv saqlangan</span><button class="link" onclick="clearLoc()">O'chirish</button>`:
+   <div class="locrow">${hasLoc?`<span class="tag me">Aniq joylashuv saqlangan</span><button class="link" onclick="clearLoc()">O'chirish</button>`:
      `<button class="btn soft sm" onclick="locate()">${IC.pin}Joylashuvimni aniqlash</button><span class="hint">Mijozlar sizni aniqroq topadi (ixtiyoriy)</span>`}</div>
    <div class="row2"><div><label>Telefon raqam</label><input id="p_phone" type="tel" value="${esc(p.phone)}"></div>
-   <div><label>Asosiy narx (minimal so'm)</label><input id="p_price" type="number" inputmode="numeric" min="1000" step="1000" value="${esc(p.price)}" placeholder="50000"></div></div>
-   
-   <div class="sec">
-     <h3 style="margin:12px 0 6px">💇‍♂️ Xizmatlar ro'yxati va narxlar (Katalog)</h3>
-     <div class="hint" style="margin-bottom:8px">Mijozlar ushbu xizmatlardan birini yoki bir nechtasini tanlab yoziladi</div>
-     <div id="services_container"></div>
-     <button type="button" class="btn soft sm" onclick="addServiceRow()">+ Yangi xizmat qo'shish</button>
-   </div>
-
-   <label style="margin-top:14px">Ish kunlari</label><div class="days">${DAYS.map((d,i)=>`<label><input type="checkbox" class="p_day" value="${i}" ${p.days.includes(i)?'checked':''}>${d}</label>`).join('')}</div>
-   <div class="row2 keep"><div><label>Ish boshlanishi</label><input id="p_from" type="time" value="${p.from}"></div>
-   <div><label>Ish tugashi</label><input id="p_to" type="time" value="${p.to}"></div></div>
+   <div><label>Minimal narx (so'm)</label><input id="p_price" type="number" inputmode="numeric" min="1000" step="1000" value="${esc(p.price)}" placeholder="50000"></div></div>
+   <div class="sec"><h3 style="margin:14px 0 4px">Xizmatlar va narxlar</h3><div class="hint" style="margin-bottom:10px">Mijozlar bir yoki bir nechta xizmatni tanlab yoziladi</div>
+     <div id="services_container"></div><button type="button" class="btn soft sm" onclick="addServiceRow()">${IC.plus}Xizmat qo'shish</button></div>
+   <label style="margin-top:18px">Ish kunlari</label><div class="days">${DAYS.map((d,i)=>`<label><input type="checkbox" class="p_day" value="${i}" ${p.days.includes(i)?'checked':''}>${d}</label>`).join('')}</div>
+   <div class="row2 keep"><div><label>Boshlanishi</label><input id="p_from" type="time" value="${p.from}"></div><div><label>Tugashi</label><input id="p_to" type="time" value="${p.to}"></div></div>
    <label>Bir mijoz uchun vaqt</label><select id="p_slot">${[30,45,60,90].map(m=>`<option value="${m}" ${p.slot===m?'selected':''}>${m} daqiqa</option>`).join('')}</select>
-   <div class="sec"><h3 style="margin:12px 0 2px">💳 To'lov kartasi (Mijozlar to'lovi uchun)</h3>
-    <div class="hint">Mijozlar 50% oldindan to'lovni shu kartaga o'tkazadi.</div>
+   <div class="sec"><h3 style="margin:14px 0 2px">To'lov kartasi</h3><div class="hint">Mijozlar 50% oldindan to'lovni shu kartaga o'tkazadi.</div>
     <label>Karta raqami</label><input id="p_card" inputmode="numeric" maxlength="19" value="${esc(fmtCard(p.card))}" placeholder="8600 0000 0000 0000" oninput="this.value=fmtCard(this.value)">
     <label>Karta egasi</label><input id="p_holder" value="${esc(p.holder||'')}" placeholder="Ism Familiya"></div>
    ${S.err?`<div class="err">${esc(S.err)}</div>`:''}
    <button class="btn primary block" onclick="savePost()">${IC.save}Saqlash va e'lon qilish</button>
    ${saved?`<button class="btn ghost block" style="margin-top:10px" onclick="cancelEdit()">Bekor qilish</button>`:''}</div>`;
 }
-
+function pickPhoto(inp){
+  const f=inp.files&&inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{const im=new Image();im.onload=()=>{
+    const sc=Math.min(1,640/im.width),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    const p=readForm();p.photo=c.toDataURL('image/jpeg',.65);S.draft=p;render()};im.src=r.result};
+  r.readAsDataURL(f);
+}
+function removePhoto(){const p=readForm();delete p.photo;S.draft=p;render()}
 function readForm(){
   const base=S.draft||load().posts[S.user.login]||{};
-  const serviceRows = document.querySelectorAll('#services_container .service-item');
-  const services = [];
-  serviceRows.forEach(row => {
-    const name = row.querySelector('.srv-name')?.value.trim();
-    const price = +row.querySelector('.srv-price')?.value;
-    if(name && price > 0) services.push({name, price});
+  const services=[];
+  document.querySelectorAll('#services_container .service-item').forEach(row=>{
+    const name=row.querySelector('.srv-name')?.value.trim(),price=+row.querySelector('.srv-price')?.value;
+    if(name&&price>0)services.push({name,price});
   });
-
   return {shop:val('p_shop'),address:val('p_addr'),phone:val('p_phone'),price:+val('p_price'),district:val('p_dist'),
     days:[...document.querySelectorAll('.p_day:checked')].map(x=>+x.value),from:val('p_from'),to:val('p_to'),slot:+val('p_slot'),
-    card:val('p_card').replace(/\D/g,''),holder:val('p_holder'),lat:base.lat,lng:base.lng, 
-    subUntil: base.subUntil || (Date.now() + 30*24*3600*1000),
-    isSuspended: base.isSuspended || false,
-    services: services.length ? services : [{name:'Soch kesish', price:+val('p_price')||50000}]};
+    card:val('p_card').replace(/\D/g,''),holder:val('p_holder'),lat:base.lat,lng:base.lng,photo:base.photo,
+    subUntil:base.subUntil||(Date.now()+30*24*3600*1000),isSuspended:base.isSuspended||false,
+    services:services.length?services:[{name:'Soch kesish',price:+val('p_price')||50000}]};
 }
-
 function savePost(){
-  const p=readForm();
-  const bad=m=>{S.err=m;S.draft=p;render();};
+  const p=readForm(),bad=m=>{S.err=m;S.draft=p;render()};
   if(p.shop.length<2)return bad('Sartaroshxona nomini kiriting');
   if(!p.district)return bad('Tumanni tanlang');
   if(p.address.length<3)return bad('Manzilni kiriting');
@@ -906,11 +711,8 @@ function savePost(){
   if(!p.from||!p.to||toMin(p.to)-toMin(p.from)<p.slot)return bad("Ish vaqti noto'g'ri");
   if(p.card.length!==16)return bad("Karta raqami 16 ta raqamdan iborat bo'lishi kerak");
   if(p.holder.length<3)return bad('Karta egasining ismini kiriting');
-  const db=load();
-  db.posts[S.user.login]={...p, updated:Date.now()};
-  save(db);
-  S.err=null;S.draft=null;S.editing=false;S.msg="E'lon saqlandi ✅";
-  render();
+  const db=load();db.posts[S.user.login]={...p,updated:Date.now()};save(db);
+  S.err=null;S.draft=null;S.editing=false;S.msg="E'lon saqlandi";render();
 }
 function editPost(){S.tab='post';S.viewing=null;S.editing=true;S.draft=null;S.err=null;S.msg=null;render()}
 function cancelEdit(){S.editing=false;S.draft=null;S.err=null;render()}
@@ -924,141 +726,124 @@ function deletePost(){
 function locate(){
   if(!navigator.geolocation)return toast("Joylashuvni aniqlab bo'lmadi",'bad');
   const p=readForm();S.draft=p;
-  navigator.geolocation.getCurrentPosition(pos=>{S.draft={...p,lat:+pos.coords.latitude.toFixed(5),lng:+pos.coords.longitude.toFixed(5)};toast('Joylashuv aniqlandi ✅','ok');render()},
+  navigator.geolocation.getCurrentPosition(pos=>{S.draft={...p,lat:+pos.coords.latitude.toFixed(5),lng:+pos.coords.longitude.toFixed(5)};toast('Joylashuv aniqlandi','ok');render()},
     ()=>{toast("Joylashuvni aniqlab bo'lmadi.",'bad');render()},{timeout:9000,enableHighAccuracy:true});
 }
 function clearLoc(){const p=readForm();delete p.lat;delete p.lng;S.draft=p;render()}
- 
-function toggleFavorite(login, event){
+
+function toggleFavorite(login,event){
   event.stopPropagation();
-  const db = load();
-  db.favorites = db.favorites || {};
-  db.favorites[S.user.login] = db.favorites[S.user.login] || [];
-  const idx = db.favorites[S.user.login].indexOf(login);
-  if(idx > -1){ db.favorites[S.user.login].splice(idx, 1); toast("Sevimlilardan olib tashlandi"); }
-  else { db.favorites[S.user.login].push(login); toast("Sevimlilarga qo'shildi ❤️", "ok"); }
-  save(db); render();
+  const db=load();db.favorites=db.favorites||{};db.favorites[S.user.login]=db.favorites[S.user.login]||[];
+  const a=db.favorites[S.user.login],i=a.indexOf(login);
+  if(i>-1){a.splice(i,1);toast("Sevimlilardan olib tashlandi")}else{a.push(login);toast("Sevimlilarga qo'shildi","ok")}
+  save(db);render();
 }
 
+/* ---------- POST CARD ---------- */
+function hue(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h}
+function cover(p,login){
+  return p.photo?`<div class="cover" style="background-image:url('${p.photo}')"></div>`:`<div class="cover art" style="--h:${hue(p.shop||login)}">${IC.scissors}</div>`;
+}
 function postCard(i,o={}){
-  const {login,p,owner,r,d}=i,mine=S.user&&login===S.user.login;
-  const maskCard=fmtCard(p.card).replace(/^(\d{4}) (\d{4}) (\d{4})/,'$1 **** ****');
-  const servicesList = p.services || [{name:'Soch kesish', price:p.price}];
-  
-  const db = load();
-  const isFav = S.user && S.user.role === 'mijoz' && (db.favorites?.[S.user.login]?.includes(login));
-  const pos = postPos(p);
-  const mapUrl = pos ? `https://yandex.uz/maps/?rtext=~${pos[0]},${pos[1]}` : `https://yandex.uz/maps/?text=${encodeURIComponent(p.district + ' ' + p.address)}`;
-
-  return `<div class="card post ${o.static?'static':''}" ${o.static?'':`onclick="openPost('${esc(login)}')"`}>
-    <div class="ptop">
-      <h3>${esc(p.shop)}</h3>
-      <div style="display:flex;gap:6px;align-items:center">
-        ${o.top?'<span class="tag top">🏆 1-o\'rin</span>':''}
-        ${mine?'<span class="tag me">Sizniki</span>':''}
-        ${S.user && S.user.role === 'mijoz' ? `<button class="btn ghost sm" style="padding:0 8px;font-size:16px" onclick="toggleFavorite('${esc(login)}', event)">${isFav ? '❤️' : '🤍'}</button>` : ''}
-      </div>
-    </div>
-    <div class="rline">${ratingLine(r)}</div>
-    <p>📞 ${esc(p.phone)}</p>
-    <p>📍 ${p.district?esc(p.district)+' tumani · ':''}${esc(p.address)} <a href="${mapUrl}" target="_blank" onclick="event.stopPropagation()" style="color:var(--brand);font-weight:600;font-size:12px;margin-left:4px">[Xaritada]</a></p>
-    <p>🕒 ${p.from}–${p.to} · ${p.slot} daqiqa</p>
-    <div style="margin-top:8px">${p.days.map(x=>`<span class="tag">${DAYS[x]}</span>`).join('')}</div>
-    <div style="margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)">
-      <b style="font-size:13px;color:var(--hint)">Xizmatlar katalogi:</b>
-      ${servicesList.map(s => `<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:3px"><span>• ${esc(s.name)}</span><b>${money(s.price)}</b></div>`).join('')}
-    </div>
-    ${o.own?`<p style="margin-top:8px">💳 ${esc(maskCard)} · ${esc(p.holder||'')}</p>`:''}
-    ${mine?`<div class="manage"><button class="btn outline sm" onclick="event.stopPropagation();editPost()">${IC.edit}Tahrirlash</button>
-      <button class="btn ghost sm" style="color:var(--bad)" onclick="event.stopPropagation();deletePost()">${IC.trash}O'chirish</button></div>`:''}</div>`;
+  const {login,p,r,d}=i,mine=S.user&&login===S.user.login;
+  const mask=fmtCard(p.card).replace(/^(\d{4}) (\d{4}) (\d{4})/,'$1 **** ****');
+  const all=p.services||[{name:'Soch kesish',price:p.price}],list=o.static?all:all.slice(0,3),more=all.length-list.length;
+  const db=load(),isFav=S.user&&S.user.role==='mijoz'&&(db.favorites?.[S.user.login]?.includes(login));
+  const pos=postPos(p),mapUrl=pos?`https://yandex.uz/maps/?rtext=~${pos[0]},${pos[1]}`:`https://yandex.uz/maps/?text=${encodeURIComponent(p.district+' '+p.address)}`;
+  const rb=r.n?`${IC.star.replace('fill="none"','fill="currentColor"')}${r.avg.toFixed(1)} <small>(${r.n})</small>`:'Yangi';
+  return `<div class="card post ${o.static?'static':''}" ${o.static?'':`onclick="openPost('${js(login)}')"`}>
+    <div class="coverwrap">${cover(p,login)}<div class="cov-grad"></div>
+      <div class="cov-top">${o.top?'<span class="tag top">1-o\'rin</span>':''}${mine?'<span class="tag me">Sizniki</span>':''}<span class="sp"></span>
+        ${S.user&&S.user.role==='mijoz'?`<button class="fav ${isFav?'on':''}" onclick="toggleFavorite('${js(login)}',event)">${IC.heart}</button>`:''}</div>
+      <div class="cov-bot"><span class="rbadge">${rb}</span>${d!=null?`<span class="dbadge">${d.toFixed(1)} km</span>`:''}</div></div>
+    <div class="pbody"><h3>${esc(p.shop)}</h3>
+      <div class="meta">${IC.pin}<span>${p.district?esc(p.district)+' tumani · ':''}${esc(p.address)}<a href="${mapUrl}" target="_blank" onclick="event.stopPropagation()">Xaritada</a></span></div>
+      <div class="meta">${IC.clock}<span>${p.from}–${p.to} · ${p.slot} daqiqa</span></div>
+      <div class="meta">${IC.phone}<span>${esc(p.phone)}</span></div>
+      <div style="margin-top:10px">${[0,1,2,3,4,5,6].map(x=>`<span class="tag ${p.days.includes(x)?'on':''}" style="${p.days.includes(x)?'':'opacity:.35'}">${DAYS[x]}</span>`).join('')}</div>
+      <div class="svc"><div class="h">Xizmatlar</div>${list.map(s=>`<div class="s"><span>${esc(s.name)}</span><b>${money(s.price)}</b></div>`).join('')}${more>0?`<div class="hint" style="margin-top:2px">+ yana ${more} ta xizmat</div>`:''}</div>
+      ${o.own?`<div class="meta" style="margin-top:12px">${IC.card}<span>${esc(mask)} · ${esc(p.holder||'')}</span></div>`:''}
+      ${mine?`<div class="manage"><button class="btn outline sm" onclick="event.stopPropagation();editPost()">${IC.edit}Tahrirlash</button>
+        <button class="btn ghost sm danger" onclick="event.stopPropagation();deletePost()">${IC.trash}O'chirish</button></div>`:''}</div></div>`;
 }
- 
+
 function rating(db,login){const r=db.ratings.filter(x=>x.barber===login);return{n:r.length,avg:r.length?r.reduce((s,x)=>s+x.stars,0)/r.length:0}}
-const starsHtml=avg=>{const n=Math.round(avg);return `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`};
-const ratingLine=r=>r.n?`${starsHtml(r.avg)} <b>${r.avg.toFixed(1)}</b> <span class="hint">(${r.n} ta baho)</span>`:`<span class="hint">☆ Hali baholanmagan</span>`;
-const rateInput=(barber,cur)=>`<span class="rate">${[1,2,3,4,5].map(n=>`<button class="${n<=cur?'on':''}" aria-label="${n} yulduz" onclick="rate('${esc(barber)}',${n})">★</button>`).join('')}</span>`;
+const rateInput=(barber,cur)=>`<span class="rate">${[1,2,3,4,5].map(n=>`<button class="${n<=cur?'on':''}" aria-label="${n} yulduz" onclick="rate('${js(barber)}',${n})">★</button>`).join('')}</span>`;
 const canRate=(db,client,barber)=>db.bookings.some(b=>b.client===client&&b.barber===barber&&st(b)==='done');
 const myRating=(db,client,barber)=>db.ratings.find(x=>x.client===client&&x.barber===barber)?.stars||0;
 
 function listItems(db){
   const q=S.q.trim().toLowerCase();
-  let items=Object.entries(db.posts)
-    .filter(([login, p]) => isSubActive(p))
-    .map(([login,p])=>{
-      const owner=db.users.find(u=>u.login===login),pos=postPos(p);
-      return{login,p,owner,r:rating(db,login),d:(S.pos&&pos)?km(S.pos.lat,S.pos.lng,pos[0],pos[1]):null};
-    });
-  if(S.onlyFav && S.user){
-    const favs = db.favorites?.[S.user.login] || [];
-    items = items.filter(i => favs.includes(i.login));
-  }
+  let items=Object.entries(db.posts).filter(([l,p])=>isSubActive(p)).map(([login,p])=>{
+    const owner=db.users.find(u=>u.login===login),pos=postPos(p);
+    return{login,p,owner,r:rating(db,login),d:(S.pos&&pos)?km(S.pos.lat,S.pos.lng,pos[0],pos[1]):null};
+  });
+  if(S.onlyFav&&S.user){const f=db.favorites?.[S.user.login]||[];items=items.filter(i=>f.includes(i.login))}
   if(S.dist)items=items.filter(i=>i.p.district===S.dist);
   if(q)items=items.filter(i=>[i.p.shop,i.p.address,i.p.district].join(' ').toLowerCase().includes(q));
   const byRating=(a,b)=>(b.r.avg-a.r.avg)||(b.r.n-a.r.n)||((b.p.updated||0)-(a.p.updated||0));
-  if(S.sort==='near'&&S.pos)items.sort((a,b)=>((a.d??1e9)-(b.d??1e9))||byRating(a,b));
-  else items.sort(byRating);
+  if(S.sort==='near'&&S.pos)items.sort((a,b)=>((a.d??1e9)-(b.d??1e9))||byRating(a,b));else items.sort(byRating);
   return items;
 }
 function allPosts(){
   const db=load(),items=listItems(db),filtered=!!(S.q.trim()||S.dist||S.onlyFav);
   const search=`<div class="card"><h2>Sartaroshxona qidirish</h2>
-    <div class="srow"><input id="s_q" type="search" enterkeyhint="search" value="${esc(S.q)}" placeholder="Nomi yoki manzil bo'yicha" onkeydown="if(event.key==='Enter')doSearch()">
-      <button class="btn primary" onclick="doSearch()">${IC.search}Qidirish</button></div>
-    <div class="srow"><select id="s_dist" onchange="doSearch()"><option value="">Toshkent — barcha tumanlar</option>${Object.keys(DISTRICTS).map(d=>`<option value="${esc(d)}" ${S.dist===d?'selected':''}>${esc(d)} tumani</option>`).join('')}</select>
+    <div class="srow"><div class="inwrap">${IC.search}<input id="s_q" type="search" enterkeyhint="search" value="${esc(S.q)}" placeholder="Nomi yoki manzil bo'yicha" onkeydown="if(event.key==='Enter')doSearch()"></div>
+      <button class="btn primary" onclick="doSearch()">Qidirish</button></div>
+    <div class="srow"><select id="s_dist" onchange="doSearch()"><option value="">Toshkent: barcha tumanlar</option>${Object.keys(DISTRICTS).map(d=>`<option value="${esc(d)}" ${S.dist===d?'selected':''}>${esc(d)} tumani</option>`).join('')}</select>
       <button class="btn soft" onclick="nearMe()">${IC.pin}Menga yaqin</button></div>
-    <div class="chips"><button class="chip ${S.sort==='rating'?'on':''}" onclick="sortRating()">⭐ Reyting bo'yicha</button>
-      <button class="chip ${S.sort==='near'&&S.pos?'on':''}" onclick="nearMe()">📍 Yaqinlik bo'yicha</button>
-      ${S.user && S.user.role === 'mijoz' ? `<button class="chip ${S.onlyFav?'on':''}" onclick="toggleOnlyFav()">❤️ Sevimlilarim</button>` : ''}
-      ${(S.q||S.dist||S.pos||S.onlyFav)?`<button class="chip" onclick="clearSearch()">✕ Tozalash</button>`:''}</div></div>`;
-  if(!items.length)return search+`<div class="card empty"><div style="font-size:44px">🔎</div><b>E'lon yo'q</b><br>${filtered?"Bu hududda e'lon topilmadi":"Hozircha faol e'lonlar yo'q."}</div>`;
-  return search+`<div class="hint" style="margin:0 4px 10px">Toshkent shahri · ${items.length} ta e'lon</div>
+    <div class="chips"><button class="chip ${S.sort==='rating'?'on':''}" onclick="sortRating()">${IC.star}Reyting</button>
+      <button class="chip ${S.sort==='near'&&S.pos?'on':''}" onclick="nearMe()">${IC.pin}Yaqinlik</button>
+      ${S.user&&S.user.role==='mijoz'?`<button class="chip ${S.onlyFav?'on':''}" onclick="toggleOnlyFav()">${IC.heart}Sevimlilar</button>`:''}
+      ${(S.q||S.dist||S.pos||S.onlyFav)?`<button class="chip" onclick="clearSearch()">${IC.x}Tozalash</button>`:''}</div></div>`;
+  if(!items.length)return search+`<div class="card empty">${IC.search}<b>E'lon yo'q</b>${filtered?"Bu hududda e'lon topilmadi":"Hozircha faol e'lonlar yo'q."}</div>`;
+  return search+`<div class="hint" style="margin:0 4px 12px">Toshkent shahri · ${items.length} ta e'lon</div>
     <div class="grid">${items.map((i,k)=>postCard(i,{top:!S.onlyFav&&S.sort==='rating'&&k===0&&i.r.n>0})).join('')}</div>`;
 }
 function doSearch(){S.q=val('s_q');S.dist=val('s_dist');render()}
 function clearSearch(){S.q='';S.dist='';S.sort='rating';S.pos=null;S.onlyFav=false;['s_q','s_dist'].forEach(id=>{if($(id))$(id).value=''});render()}
 function sortRating(){S.sort='rating';render()}
-function toggleOnlyFav(){S.onlyFav = !S.onlyFav; render()}
+function toggleOnlyFav(){S.onlyFav=!S.onlyFav;render()}
 function nearMe(){
   S.q=val('s_q');S.dist=val('s_dist');
   if(S.pos){S.sort='near';return render()}
   if(!navigator.geolocation)return toast("Joylashuvni aniqlab bo'lmadi",'bad');
   toast('Joylashuvingiz aniqlanmoqda…');
-  navigator.geolocation.getCurrentPosition(pos=>{S.pos={lat:pos.coords.latitude,lng:pos.coords.longitude};S.sort='near';toast("Eng yaqin sartaroshxonalar topildi ✅",'ok');render()},
+  navigator.geolocation.getCurrentPosition(pos=>{S.pos={lat:pos.coords.latitude,lng:pos.coords.longitude};S.sort='near';toast("Eng yaqin sartaroshxonalar topildi",'ok');render()},
     ()=>toast("Joylashuvni aniqlab bo'lmadi.",'bad'),{timeout:9000});
 }
-function openPost(login){S.viewing=login;S.week=0;S.day=null;S.selectedServices=[];render()}
- 
+function openPost(login){S.viewing=login;S.week=0;S.day=null;S.selectedServices=[];render();window.scrollTo({top:0})}
+
 function detailView(login){
   const db=load(),p=db.posts[login];
-  if(!p || !isSubActive(p)){S.viewing=null;return allPosts()}
+  if(!p||!isSubActive(p)){S.viewing=null;return allPosts()}
   const canBook=S.user.role==='mijoz',r=rating(db,login);
   const item={login,p,owner:db.users.find(u=>u.login===login),r,d:null};
   let rateBox='';
   if(S.user.role==='mijoz'){
-    rateBox=canRate(db,S.user.login,login)
-      ?`<div class="card"><h2>Sartaroshni baholang</h2>${rateInput(login,myRating(db,S.user.login,login))}</div>`
-      :`<div class="card"><div class="hint">⭐ Baholash uchun avval shu sartaroshdan xizmat olishingiz kerak.</div></div>`;
+    rateBox=canRate(db,S.user.login,login)?`<div class="card"><h2>Sartaroshni baholang</h2>${rateInput(login,myRating(db,S.user.login,login))}</div>`
+      :`<div class="card"><div class="hint">Baholash uchun avval shu sartaroshdan xizmat olishingiz kerak.</div></div>`;
   }
-  return `<button class="link" onclick="S.viewing=null;render()">← Orqaga</button>
+  return `<button class="link" style="margin-bottom:8px" onclick="S.viewing=null;render()">${IC.back}Orqaga</button>
    ${postCard(item,{static:true})}
    <div class="card"><h2>Haftalik kalendar</h2>
-    ${canBook?'<div class="hint" style="margin-bottom:10px">Bo\'sh vaqtni bosing — 50% to\'lovdan keyin tasdiqlanadi</div>':'<div class="hint" style="margin-bottom:10px">Faqat ko\'rish rejimi</div>'}
+    <div class="hint" style="margin-bottom:12px">${canBook?"Bo'sh vaqtni bosing — 50% to'lovdan keyin tasdiqlanadi":"Faqat ko'rish rejimi"}</div>
     ${calendar(login,canBook?'client':'view')}</div>${rateBox}`;
 }
- 
-function cellOf(login,mode,bk,dm,ds,t,now, isDayOff){
-  if(isDayOff) return {cls:'dayoff',label:'Dam olish'};
+
+/* ---------- CALENDAR ---------- */
+function cellOf(login,mode,bk,dm,ds,t,now,isDayOff){
+  if(isDayOff)return{cls:'dayoff',label:'Dam olish'};
   const key=ds+'|'+t,b=bk[key],past=new Date(`${ds}T${t}`)<now;
   if(b){
     const pend=st(b)==='pending',first=b.clientPhone;
-    if(mode==='barber')return pend?{cls:'pend',label:first,title:`${b.clientPhone}`}
-      :{cls:'conf',label:first,title:`${b.clientPhone}`,click:`finish('${b.id}')`};
+    if(mode==='barber')return pend?{cls:'pend',label:first,title:`${b.clientPhone}`}:{cls:'conf',label:first,title:`${b.clientPhone}`,click:`finish('${js(b.id)}')`};
     if(b.client===S.user.login)return pend?{cls:'pend',label:'Kutilmoqda'}:{cls:'mine',label:'Sizniki'};
     return{cls:'busy',label:'Band'};
   }
-  if(mode==='barber'&&dm[key]&&past)return{cls:'done',label:'✓ Bajarildi'};
+  if(mode==='barber'&&dm[key]&&past)return{cls:'done',label:'Bajarildi'};
   if(past)return{cls:'past',label:'–'};
-  if(mode==='client')return{cls:'free',label:"Bo'sh",click:`askBook('${esc(login)}','${ds}','${t}')`};
+  if(mode==='client')return{cls:'free',label:"Bo'sh",click:`askBook('${js(login)}','${ds}','${t}')`};
   return{cls:'',label:"Bo'sh"};
 }
 function selDay(p){
@@ -1067,91 +852,70 @@ function selDay(p){
   return S.week===0?(wd.find(x=>x>=today)??wd[0]):wd[0];
 }
 function calendar(login,mode){
-  const db=load(),p=db.posts[login];
-  if(!p)return `<div class="empty">E'lon yo'q</div>`;
+  const db=load(),p=db.posts[login];if(!p)return `<div class="empty">E'lon yo'q</div>`;
   const ws=weekStart(S.week),dates=[...Array(7)].map((_,i)=>{const d=new Date(ws);d.setDate(ws.getDate()+i);return d});
-  const times=slotTimes(p),now=new Date(),sd=selDay(p);
-  const bk={},dm={};
+  const times=slotTimes(p),now=new Date(),sd=selDay(p),bk={},dm={};
   db.bookings.filter(b=>b.barber===login).forEach(b=>{const k=b.date+'|'+b.time;if(active(b))bk[k]=b;else if(st(b)==='done')dm[k]=b});
-  
-  const dayOffs = db.dayOffs?.[login] || [];
+  const dayOffs=db.dayOffs?.[login]||[];
   const attrs=c=>`${c.click?`onclick="${c.click}"`:''} ${c.title?`title="${esc(c.title)}"`:''}`;
-  
   const rows=times.map(t=>`<tr><td class="t">${t}</td>${dates.map((d,i)=>{
     if(!p.days.includes(i))return `<td class="cell closed"></td>`;
-    const dsStr = ymd(d);
-    const isDayOff = dayOffs.includes(dsStr);
-    const c=cellOf(login,mode,bk,dm,dsStr,t,now, isDayOff);
+    const ds=ymd(d),c=cellOf(login,mode,bk,dm,ds,t,now,dayOffs.includes(ds));
     return `<td class="cell ${c.cls}" ${attrs(c)}>${esc(c.label)}</td>`}).join('')}</tr>`).join('');
-  
-  const selDateStr = ymd(dates[sd]);
-  const isSelDayOff = dayOffs.includes(selDateStr);
-  const mslots=times.map(t=>{const c=cellOf(login,mode,bk,dm,selDateStr,t,now, isSelDayOff);
-    return `<div class="mc cell ${c.cls}" ${attrs(c)}><b>${t}</b><span>${esc(c.label)}</span></div>`}).join('');
-  
-  const dayOffToggleBtn = mode==='barber' ? `<div style="margin-bottom:12px"><button class="btn ${isSelDayOff?'success':'ghost'} sm" onclick="toggleDayOff('${login}','${selDateStr}')">${isSelDayOff?'✅ Ish kuni qilish':'🏖 Dam olish kuni qilish'}</button></div>` : '';
-
+  const selStr=ymd(dates[sd]),isOff=dayOffs.includes(selStr);
+  const mslots=times.map(t=>{const c=cellOf(login,mode,bk,dm,selStr,t,now,isOff);return `<div class="mc cell ${c.cls}" ${attrs(c)}><b>${t}</b><span>${esc(c.label)}</span></div>`}).join('');
+  const offBtn=mode==='barber'?`<div style="margin-bottom:14px"><button class="btn ${isOff?'success':'ghost'} sm" onclick="toggleDayOff('${js(login)}','${selStr}')">${isOff?IC.check+'Ish kuni qilish':IC.sun+'Dam olish kuni qilish'}</button></div>`:'';
   const nav=`<div class="weeknav"><button class="btn soft sm" onclick="S.week--;S.day=null;render()">‹ Oldingi</button>
     <b>${ws.getDate()}.${pad(ws.getMonth()+1)} – ${dates[6].getDate()}.${pad(dates[6].getMonth()+1)}</b>
     <button class="btn soft sm" onclick="S.week++;S.day=null;render()">Keyingi ›</button></div>`;
-  return `${dayOffToggleBtn}${nav}
+  return `${offBtn}${nav}
    <div class="desk"><div class="cal"><table><tr><th></th>${dates.map((d,i)=>`<th>${DAYS[i]}<b>${d.getDate()}</b></th>`).join('')}</tr>${rows}</table></div></div>
    <div class="mob"><div class="dchips">${dates.map((d,i)=>p.days.includes(i)
       ?`<button class="dchip ${i===sd?'on':''}" onclick="S.day=${i};render()">${DAYS[i]}<b>${d.getDate()}</b></button>`
       :`<button class="dchip off" disabled>${DAYS[i]}<b>${d.getDate()}</b></button>`).join('')}</div>
      <div class="mslots">${mslots}</div></div>`;
 }
-
-function toggleDayOff(login, dateStr){
-  const db = load();
-  db.dayOffs = db.dayOffs || {};
-  db.dayOffs[login] = db.dayOffs[login] || [];
-  const idx = db.dayOffs[login].indexOf(dateStr);
-  if(idx > -1){ db.dayOffs[login].splice(idx, 1); toast("Ish kuni belgilandi", "ok"); }
-  else { db.dayOffs[login].push(dateStr); toast("Dam olish kuni belgilandi 🏖", "ok"); }
-  save(db); render();
+function toggleDayOff(login,ds){
+  const db=load();db.dayOffs=db.dayOffs||{};db.dayOffs[login]=db.dayOffs[login]||[];
+  const i=db.dayOffs[login].indexOf(ds);
+  if(i>-1){db.dayOffs[login].splice(i,1);toast("Ish kuni belgilandi","ok")}else{db.dayOffs[login].push(ds);toast("Dam olish kuni belgilandi","ok")}
+  save(db);render();
 }
- 
 function myCalendar(){
   const db=load(),login=S.user.login,p=db.posts[login];
-  if(!p)return `<div class="card empty">E'lon yo'q.<br><br><button class="btn primary sm" onclick="setTab('post')">E'lon joylash</button></div>`;
+  if(!p)return `<div class="card empty">${IC.edit}<b>E'lon yo'q</b><button class="btn primary sm" style="margin-top:14px" onclick="setTab('post')">E'lon joylash</button></div>`;
   const mineB=db.bookings.filter(b=>b.barber===login);
   const pend=mineB.filter(b=>st(b)==='pending').sort((a,b)=>a.created-b.created);
   const conf=mineB.filter(b=>st(b)==='confirmed').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-  
   const reqs=pend.length?`<div class="card"><h2>To'lovni tasdiqlash (${pend.length})</h2>
-    ${pend.map(b=>`<div class="req"><div class="head">
-       <div><b>${fmtDate(b.date)} · ${b.time}</b><br><span class="hint">📞 ${esc(b.clientPhone)}</span></div>
-       <div style="text-align:right"><b style="font-size:18px;color:var(--brand)">${money(deposit(b))}</b></div></div>
-       <div class="acts"><button class="btn success" onclick="decide('${b.id}','confirmed')">Tasdiqlash</button>
-       <button class="btn outline" onclick="decide('${b.id}','rejected')">Rad etish</button></div></div>`).join('')}</div>`:'';
-  
+    ${pend.map(b=>`<div class="req"><div class="head"><div><b>${fmtDate(b.date)} · ${b.time}</b><br><span class="hint">${esc(b.clientPhone)}</span></div>
+       <b style="font-size:20px;color:var(--gold);font-family:var(--head)">${money(deposit(b))}</b></div>
+       <div class="acts"><button class="btn success" onclick="decide('${js(b.id)}','confirmed')">${IC.check}Tasdiqlash</button>
+       <button class="btn outline" onclick="decide('${js(b.id)}','rejected')">${IC.x}Rad etish</button></div></div>`).join('')}</div>`:'';
   return `${reqs}<div class="card"><h2>Mening kalendarim</h2>${calendar(login,'barber')}</div>
-   <div class="card"><h2>Tasdiqlangan yozuvlar (${conf.length})</h2><div class="list">${conf.length?conf.map(b=>`<div class="it"><div><b>${fmtDate(b.date)} · ${b.time}</b><br><span class="hint">📞 ${esc(b.clientPhone)}</span><br>
-      <button class="btn success sm" style="margin-top:8px" onclick="finish('${b.id}')">Soch olindi</button></div>
+   <div class="card"><h2>Tasdiqlangan yozuvlar (${conf.length})</h2><div class="list">${conf.length?conf.map(b=>`<div class="it"><div><b>${fmtDate(b.date)} · ${b.time}</b><br><span class="hint">${esc(b.clientPhone)}</span><br>
+      <button class="btn success sm" style="margin-top:10px" onclick="finish('${js(b.id)}')">${IC.check}Soch olindi</button></div>
       <div style="text-align:right"><b>${money(b.price)}</b></div></div>`).join(''):'<div class="empty">Yozuvlar yo\'q</div>'}</div></div>`;
 }
- 
 function decide(id,status){
   const db=load(),b=db.bookings.find(x=>x.id===id);if(!b||st(b)!=='pending')return render();
-  b.status=status;b.decidedAt=Date.now();save(db);
-  toast(status==='confirmed'?"Tasdiqlandi ✅":"Rad etildi",'ok');
-  render();
+  b.status=status;b.decidedAt=Date.now();save(db);toast(status==='confirmed'?"Tasdiqlandi":"Rad etildi",'ok');render();
 }
 function finish(id){
   const db=load(),b=db.bookings.find(x=>x.id===id);if(!b||st(b)!=='confirmed')return render();
-  b.status='done';b.doneAt=Date.now();save(db);
-  toast("Soch olindi ✅","ok");render();
+  if(!confirm("Soch olindi deb belgilaysizmi?"))return;
+  b.status='done';b.doneAt=Date.now();save(db);toast("Soch olindi","ok");render();
 }
- 
+
+/* ---------- CLIENT: BOOKINGS ---------- */
 function myBookings(){
   const db=load(),mine=db.bookings.filter(b=>b.client===S.user.login).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
   return `<div class="card"><h2>Mening yozuvlarim</h2><div class="list">${mine.length?mine.map(b=>{const p=db.posts[b.barber],s=st(b);return `<div class="it"><div>
-     <b>${fmtDate(b.date)} · ${b.time}</b><br><span class="hint">${esc(p?.shop||b.barber)}</span><br>
-     <span class="pill ${s}" style="margin-top:6px">${STATUS[s]}</span>
-     ${s==='pending'?`<button class="link" onclick="cancelBooking('${b.id}')">Bekor qilish</button>`:''}
-     ${s==='done'&&p?`<div style="margin-top:8px"><span class="hint">Baholash:</span><br>${rateInput(b.barber,myRating(db,S.user.login,b.barber))}</div>`:''}</div>
-     <div style="text-align:right"><b>${money(b.price)}</b></div></div>`}).join(''):'<div class="empty">Siz hali yozilmagansiz</div>'}</div></div>`;
+     <b>${fmtDate(b.date)} · ${b.time}</b><br><span class="hint">${esc(p?.shop||b.shop||b.barber)}</span><br>
+     <span class="pill ${s}" style="margin-top:8px">${STATUS[s]}</span>
+     ${s==='pending'?`<br><button class="link" onclick="cancelBooking('${js(b.id)}')">Bekor qilish</button>`:''}
+     ${s==='done'&&p?`<div style="margin-top:10px"><span class="hint">Baholash:</span><br>${rateInput(b.barber,myRating(db,S.user.login,b.barber))}</div>`:''}</div>
+     <div style="text-align:right"><b>${money(b.price)}</b></div></div>`}).join(''):`<div class="empty">${IC.calendar}<b>Siz hali yozilmagansiz</b></div>`}</div></div>`;
 }
 function cancelBooking(id){
   if(!confirm("Bekor qilasizmi?"))return;
@@ -1165,103 +929,79 @@ function rate(barber,n){
   if(ex){ex.stars=n;ex.updated=Date.now()}else db.ratings.push({barber,client:S.user.login,stars:n,created:Date.now()});
   save(db);toast(`Rahmat! ${'★'.repeat(n)}`,'ok');render();
 }
-
 function toggleServiceSelect(idx){
-  const p = load().posts[S.modal.barber];
-  const srvList = p?.services || [{name:'Soch kesish', price:p.price}];
-  const target = srvList[idx];
-  const existIdx = S.selectedServices.findIndex(s => s.name === target.name);
-  if(existIdx > -1) S.selectedServices.splice(existIdx, 1);
-  else S.selectedServices.push(target);
+  const p=load().posts[S.modal.barber],list=p?.services||[{name:'Soch kesish',price:p.price}],t=list[idx];
+  const i=S.selectedServices.findIndex(s=>s.name===t.name);
+  if(i>-1)S.selectedServices.splice(i,1);else S.selectedServices.push(t);
   render();
 }
-
 function askBook(barber,date,time){
   const p=load().posts[barber];
   if(!p?.card){toast("Sartarosh karta kiritmagan",'bad');return}
-  const srvList = p.services || [{name:'Soch kesish', price:p.price}];
-  S.selectedServices = [srvList[0]];
-  S.modal={barber,date,time};render();
+  const list=p.services||[{name:'Soch kesish',price:p.price}];
+  S.selectedServices=[list[0]];S.modal={barber,date,time};render();
 }
-
 function payModal(){
   const m=S.modal,p=load().posts[m.barber];if(!p){S.modal=null;return ''}
-  const srvList = p.services || [{name:'Soch kesish', price:p.price}];
-  const totalPrice = S.selectedServices.length ? S.selectedServices.reduce((sum, s) => sum + s.price, 0) : p.price;
-  const depPrice = totalPrice / 2;
-
+  const list=p.services||[{name:'Soch kesish',price:p.price}];
+  const total=S.selectedServices.length?S.selectedServices.reduce((s,x)=>s+x.price,0):p.price;
   return `<div class="modal" onclick="if(event.target===this){S.modal=null;render()}"><div class="box">
    <h2>To'lov (50%)</h2>
-   <div style="max-height:140px;overflow-y:auto;margin-bottom:12px">
-     ${srvList.map((srv, idx) => {
-       const isChecked = S.selectedServices.some(s => s.name === srv.name);
-       return `<div class="service-check" onclick="toggleServiceSelect(${idx})">
-         <span>${esc(srv.name)} (${money(srv.price)})</span>
-         <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation();toggleServiceSelect(${idx})">
-       </div>`;
-     }).join('')}
+   <div style="max-height:170px;overflow-y:auto;margin-bottom:12px">
+     ${list.map((srv,idx)=>{const c=S.selectedServices.some(s=>s.name===srv.name);
+       return `<div class="service-check" onclick="toggleServiceSelect(${idx})"><span>${esc(srv.name)} <b style="color:var(--gold);margin-left:4px">${money(srv.price)}</b></span>
+         <input type="checkbox" ${c?'checked':''} onclick="event.stopPropagation();toggleServiceSelect(${idx})"></div>`}).join('')}
    </div>
    <div class="sum"><div class="r"><span>Sana</span><span>${fmtDate(m.date)}</span></div><div class="r"><span>Vaqt</span><span>${m.time}</span></div></div>
-   <div class="amount"><span>O'tkazish kerak (50%)</span><b>${money(depPrice)}</b></div>
-   <div class="ccard"><small>Karta</small><div class="num">${esc(fmtCard(p.card))}</div>
-     <div class="holder">${esc(p.holder||'')}</div><button class="copy" onclick="copyCard('${esc(p.card)}')">Nusxalash</button></div>
+   <div class="amount"><span>O'tkazish kerak (50%)</span><b>${money(total/2)}</b></div>
+   <div class="ccard"><small>Karta</small><div class="num">${esc(fmtCard(p.card))}</div><div class="holder">${esc(p.holder||'')}</div><button class="copy" onclick="copyCard('${js(p.card)}')">${IC.copy}Nusxa</button></div>
    <button class="btn primary block" onclick="paid()">To'lab qo'ydim</button>
    <button class="btn ghost block" style="margin-top:10px" onclick="S.modal=null;render()">Bekor qilish</button></div></div>`;
 }
-
-function copyCard(c){
-  try{navigator.clipboard.writeText(c).then(()=>toast('Karta nusxalandi ✅','ok'))}catch(e){}
-}
+function copyCard(c){try{navigator.clipboard.writeText(c).then(()=>toast('Karta nusxalandi','ok'))}catch(e){}}
 function paid(){
   const m=S.modal,db=load(),p=db.posts[m.barber];
   if(!p){S.modal=null;return render()}
-  if(db.bookings.some(b=>b.barber===m.barber&&b.date===m.date&&b.time===m.time&&active(b))){
-    S.modal=null;toast("Bu vaqt band qilindi",'bad');return render();
+  if(db.bookings.some(b=>b.barber===m.barber&&b.date===m.date&&b.time===m.time&&active(b))||(db.dayOffs?.[m.barber]||[]).includes(m.date)||new Date(`${m.date}T${m.time}`)<new Date()){
+    S.modal=null;toast("Bu vaqt band qilingan yoki mavjud emas",'bad');return render();
   }
-  const srvList = p.services || [{name:'Soch kesish', price:p.price}];
-  const selServices = S.selectedServices.length ? S.selectedServices : [srvList[0]];
-  const totalPrice = selServices.reduce((sum, s) => sum + s.price, 0);
-
+  const list=p.services||[{name:'Soch kesish',price:p.price}],sel=S.selectedServices.length?S.selectedServices:[list[0]],total=sel.reduce((s,x)=>s+x.price,0);
   db.bookings.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),barber:m.barber,shop:p.shop,client:S.user.login,clientPhone:S.user.phone,
-    date:m.date,time:m.time,price:totalPrice,deposit:totalPrice/2,selectedServices:selServices,status:'pending',created:Date.now()});
-  save(db);S.modal=null;S.tab='mine';S.viewing=null;
-  toast("So'rov yuborildi ⏳",'ok');
-  render();
+    date:m.date,time:m.time,price:total,deposit:total/2,selectedServices:sel,status:'pending',created:Date.now()});
+  save(db);S.modal=null;S.tab='mine';S.viewing=null;toast("So'rov yuborildi",'ok');render();
 }
- 
+
+/* ---------- RENDER ---------- */
 function render(){
   const keep={};['a_phone','a_pass','s_q','s_dist','admin_monthly_fee','admin_card_num','admin_card_holder','crm_expense_input','new_admin_pass'].forEach(id=>{if($(id))keep[id]=$(id).value});
-  document.querySelectorAll('[id^="days_input_"]').forEach(el => { keep[el.id] = el.value; });
-
+  document.querySelectorAll('[id^="days_input_"]').forEach(el=>{keep[el.id]=el.value});
   $('app').innerHTML=S.user?appView():authView();
   Object.entries(keep).forEach(([id,v])=>{if($(id))$(id).value=v});
   lastPending=pendingCount();
 }
 
-async function initApp() {
+async function initApp(){
   await loadAsync();
-  S.user = currentUser();
-  if (S.user && !S.tab) {
-    if(S.user.login === ADMIN_LOGIN) S.tab = 'admin_stat';
-    else S.tab = S.user.role === 'sartarosh' ? 'post' : 'all';
-  }
+  S.user=currentUser();
+  if(S.user&&!S.tab)S.tab=firstTab(S.user);
+  lastPending=pendingCount();
   render();
 }
 initApp();
- 
+
 window.addEventListener('storage',e=>{
-  if(e.key===SES){S.user=currentUser();if(!S.user){S.viewing=null;S.modal=null}else if(!S.tab){S.tab=S.user.login===ADMIN_LOGIN?'admin_stat':(S.user.role==='sartarosh'?'post':'all');}render();return}
+  if(e.key===SES){S.user=currentUser();if(!S.user){S.viewing=null;S.modal=null}else if(!S.tab)S.tab=firstTab(S.user);render()}
+  if(e.key===THEME_KEY){applyTheme(e.newValue||'dark');render()}
 });
 
-setInterval(async ()=>{
+setInterval(async()=>{
   await loadAsync();
-  if(S.user&&!S.modal&&!formOpen()&&document.activeElement?.id!=='s_q') {
-    const n = pendingCount();
-    if (n > lastPending) toast("🔔 Yangi to'lov so'rovi!", 'ok');
-    render();
-    lastPending = n;
+  if(S.user&&!S.modal&&!S.resetModalUser&&!formOpen()&&document.activeElement?.id!=='s_q'){
+    const n=pendingCount();
+    if(n>lastPending)toast("Yangi to'lov so'rovi!",'ok');
+    render();lastPending=n;
   }
-}, 5000);
+},5000);
 </script>
 </body>
 </html>
