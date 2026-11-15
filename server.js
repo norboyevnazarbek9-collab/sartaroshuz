@@ -31,6 +31,11 @@ async function initDB() {
 }
 initDB();
 
+// 0. Asosiy sahifa (Cannot GET / xatosi chiqmasligi uchun)
+app.get('/', (req, res) => {
+  res.status(200).send('Smart Sartaroshxona Backend Server muvaffaqiyatli ishlayapti! 🚀');
+});
+
 // 1. Health check (Cron-job uxlab qolmasligi uchun va server ishlayotganini tekshirish)
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: "OK", uptime: process.uptime(), timestamp: new Date() });
