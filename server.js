@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const pool = require('./data/db');
+const pool = require('./sartaroshxona-backend/data/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
