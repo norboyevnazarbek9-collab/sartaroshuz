@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS va JSON hajmini kengaytirish (kтта ma'lumotlar sig'ishi uchun)
+// CORS va JSON hajmini kengaytirish (katta ma'lumotlar sig'ishi uchun)
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
@@ -58,7 +58,7 @@ app.post('/api/db', async (req, res) => {
 
   // Himoya 1: Kelayotgan ma'lumot umuman bo'sh bo'lsa rad etamiz
   if (!newData || Object.keys(newData).length === 0) {
-    return.status(400).json({ error: "Bo'sh ma'lumot qabul qilinmaydi" });
+    return res.status(400).json({ error: "Bo'sh ma'lumot qabul qilinmaydi" });
   }
 
   try {
@@ -72,7 +72,7 @@ app.post('/api/db', async (req, res) => {
     // Himoya 2: Agar oldin foydalanuvchilar/e'lonlar bo'lib, yangisida birdaniga hammasi 0 (bo'sh) bo'lib kelayotgan bo'lsa — bazani o'chib ketishidan saqlab qolamiz
     if (oldUsersCount > 5 && newUsersCount === 0) {
       console.error("DIQQAT: Bazadagi ma'lumotlarni tasodifan o'chirib yuborish (0 ta qilish) urinishi bloklandi!");
-      return.status(409).json({ error: "Ma'lumotlar yo'qolishining oldi olindi (bo'sh ma'lumot rad etildi)" });
+      return res.status(409).json({ error: "Ma'lumotlar yo'qolishining oldi olindi (bo'sh ma'lumot rad etildi)" });
     }
 
     // Ma'lumotni PostgreSQL'ga yozish yoki yangilash
