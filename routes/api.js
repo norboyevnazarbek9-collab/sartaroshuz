@@ -4,14 +4,14 @@ const dbController = require('../controllers/dbController');
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 
-// Ochiq yo'nalishlar (Mijozlar uchun)
+// Public yo'nalishlar (barcha foydalanuvchilar o'qishi uchun)
 router.get('/db', dbController.getDatabaseData);
 router.get('/', dbController.getDatabaseData);
 
-// Admin avtorizatsiyasi
+// Admin login
 router.post('/login', authController.adminLogin);
 
-// Himoyalangan yo'nalishlar (Faqat admin saqlashi mumkin)
+// Protected yo'nalishlar (faqat token bo'lsa ma'lumot saqlanadi)
 router.post('/db', authMiddleware, dbController.saveDatabaseData);
 router.post('/', authMiddleware, dbController.saveDatabaseData);
 
