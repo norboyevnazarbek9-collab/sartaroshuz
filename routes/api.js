@@ -1,14 +1,18 @@
-// routes/api.js
 const express = require('express');
 const router = express.Router();
 const dbController = require('../controllers/dbController');
+const authController = require('../controllers/authController');
+const authMiddleware = require('../middleware/auth');
 
-// Barcha /api va /api/db so'rovlariga ruxsat berish
+// Ochiq yo'nalishlar (Mijozlar uchun)
 router.get('/db', dbController.getDatabaseData);
-router.post('/db', dbController.saveDatabaseData);
-
-// Agar frontend shunchaki /api so'rasa
 router.get('/', dbController.getDatabaseData);
-router.post('/', dbController.saveDatabaseData);
+
+// Admin avtorizatsiyasi
+router.post('/login', authController.adminLogin);
+
+// Himoyalangan yo'nalishlar (Faqat admin saqlashi mumkin)
+router.post('/db', authMiddleware, dbController.saveDatabaseData);
+router.post('/', authMiddleware, dbController.saveDatabaseData);
 
 module.exports = router;
