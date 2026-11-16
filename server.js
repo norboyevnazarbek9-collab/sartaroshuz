@@ -50,7 +50,8 @@ app.get('/api/db', async (req, res) => {
     if (result.rows.length > 0) {
       res.json(result.rows[0].data);
     } else {
-      res.json({ users: [], posts: {}, bookings: [], settings: {} });
+      // posts massiv ([]) ko'rinishida qaytariladi
+      res.json({ users: [], posts: [], bookings: [], settings: {} });
     }
   } catch (err) {
     console.error("Ma'lumotlarni olishda xato:", err);
@@ -71,17 +72,17 @@ app.post('/api/db', async (req, res) => {
     const current = await pool.query('SELECT data FROM app_state WHERE id = 1');
     const oldData = current.rows[0]?.data || {};
 
-    const oldPostsCount = Object.keys(oldData.posts || {}).length;
-    const newPostsCount = Object.keys(newData.posts || {}).length;
+    const oldPostsCount = Array.isArray(oldData.posts) ? oldData.posts.length : 0;
+    const newPostsCount = Array.isArray(newData.posts) ? newData.posts.length : 0;
 
-    const oldUsersCount = (oldData.users || []).length;
-    const newUsersCount = (newData.users || []).length;
+    const oldUsersCount = Array.isArray(oldData.users) ? oldData.users.length : 0;
+    const newUsersCount = Array.isArray(newData.users) ? newData.users.length : 0;
 
     // XAVFSIZLIK: Agar bazada oldin e'lonlar yoki foydalanuvchilar bo'lib, 
     // kelayotgan yangi ma'lumot ularni to'satdan 0 (bo'sh) qilib yubormoqchi bo'lsa — RAD ETAMIZ!
     if ((oldPostsCount > 0 && newPostsCount === 0) || (oldUsersCount > 0 && newUsersCount === 0)) {
       console.error("⚠️ DIQQAT: Bazadagi mavjud e'lonlar/foydalanuvchilarni tasodifan o'chirib yuborish urunishi bloklandi!");
-      return.status(409).json({ 
+      return res.status(409).json({ 
         error: "Ma'lumotlar yo'qolishining oldi olindi", 
         restoredData: oldData 
       });
