@@ -1,12 +1,17 @@
 const { Pool } = require('pg');
 
-// DATABASE_URL ichidagi ?sslmode=... ni olib tashlaymiz,
-// aks holda u pastdagi ssl sozlamasini bekor qilib yuboradi
-const url = new URL(process.env.DATABASE_URL);
-url.searchParams.delete('sslmode');
+const required = ['DB_HOST', 'DB_USER', 'DB_PASSWORD'];
+const missing = required.filter((k) => !process.env[k]);
+if (missing.length) {
+  console.error('Render Environment da yetishmayotgan o\'zgaruvchilar:', missing.join(', '));
+}
 
 const pool = new Pool({
-  connectionString: url.toString(),
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT) || 5432,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || 'postgres',
   ssl: { rejectUnauthorized: false }
 });
 
