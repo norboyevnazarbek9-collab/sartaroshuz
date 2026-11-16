@@ -1,23 +1,46 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const pool = require('./config/database'); // Yangi yaratgan bazamizni ulaymiz
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS va JSON hajmini kengaytirish
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+// Xavfsizlik sarlavhalari
+app.use(helmet());
 
-app.use(express.static('public'));
+// CORS ruxsat etilgan domenlar
+const allowedOrigins = [
+  'https://sartaroshuz.onrender.com',
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
 
-// PostgreSQL bazasiga ulanish
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS siyosati tomonidan bloklandi'));
+    }
+  },
+  credentials: true
+}));
+
+// Rate Limit (Spam so'rovlardan himoya)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  message: { error: "Juda ko'p so'rov yuborildi. Iltimos, biroz kuting." }
 });
+app.use('/api/', limiter);
 
-// Bazada jadval mavjudligini tekshirish va yaratish
+app.use(express.json({ limit: '10mb' }));
+app.use(express.static('public')); // Frontend fayllarini ulash
+
+// Bazada jadval mavjudligini tekshirish
 async function initDB() {
   try {
     await pool.query(`
@@ -33,25 +56,39 @@ async function initDB() {
 }
 initDB();
 
-// 0. Asosiy sahifa
+// Default (zaxira) ma'lumotlar strukturasi
+const defaultData = {
+  users: [],
+  posts: [],
+  bookings: [],
+  settings: { adminCard: "8600000000000000", monthlyFee: 10000, adminCardHolder: "Admin" },
+  dayOffs: {},
+  ratings: [],
+  favorites: {},
+  subRequests: []
+};
+
+// Endpoints
 app.get('/', (req, res) => {
-  res.status(200).send('Smart Sartaroshxona Backend Server muvaffaqiyatli ishlayapti! 🚀');
+  res.status(200).send('Smart Sartaroshxona Backend modulli arxitekturada ishlayapti! 🚀');
 });
 
-// 1. Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: "OK", uptime: process.uptime(), timestamp: new Date() });
 });
 
-// 2. GET /api/db — Barcha ma'lumotlarni bazadan yuklab berish
+// Ma'lumotlarni bazadan olish
 app.get('/api/db', async (req, res) => {
   try {
     const result = await pool.query('SELECT data FROM app_state WHERE id = 1');
-    if (result.rows.length > 0) {
-      res.json(result.rows[0].data);
+    if (result.rows.length > 0 && result.rows[0].data) {
+      let data = result.rows[0].data;
+      if (!Array.isArray(data.users)) data.users = [];
+      if (!Array.isArray(data.posts)) data.posts = [];
+      if (!Array.isArray(data.bookings)) data.bookings = [];
+      res.json(data);
     } else {
-      // posts massiv ([]) ko'rinishida qaytariladi
-      res.json({ users: [], posts: [], bookings: [], settings: {} });
+      res.json(defaultData);
     }
   } catch (err) {
     console.error("Ma'lumotlarni olishda xato:", err);
@@ -59,49 +96,25 @@ app.get('/api/db', async (req, res) => {
   }
 });
 
-// 3. POST /api/db — Ma'lumotlarni xavfsiz saqlash (HIMOYALANGAN)
+// Ma'lumotlarni saqlash
 app.post('/api/db', async (req, res) => {
   const newData = req.body;
-
   if (!newData || typeof newData !== 'object') {
     return res.status(400).json({ error: "Noto'g'ri ma'lumot formati" });
   }
 
   try {
-    // Bazadagi hozirgi ma'lumotlarni olib tekshiramiz
-    const current = await pool.query('SELECT data FROM app_state WHERE id = 1');
-    const oldData = current.rows[0]?.data || {};
-
-    const oldPostsCount = Array.isArray(oldData.posts) ? oldData.posts.length : 0;
-    const newPostsCount = Array.isArray(newData.posts) ? newData.posts.length : 0;
-
-    const oldUsersCount = Array.isArray(oldData.users) ? oldData.users.length : 0;
-    const newUsersCount = Array.isArray(newData.users) ? newData.users.length : 0;
-
-    // XAVFSIZLIK: Agar bazada oldin e'lonlar yoki foydalanuvchilar bo'lib, 
-    // kelayotgan yangi ma'lumot ularni to'satdan 0 (bo'sh) qilib yubormoqchi bo'lsa — RAD ETAMIZ!
-    if ((oldPostsCount > 0 && newPostsCount === 0) || (oldUsersCount > 0 && newUsersCount === 0)) {
-      console.error("⚠️ DIQQAT: Bazadagi mavjud e'lonlar/foydalanuvchilarni tasodifan o'chirib yuborish urunishi bloklandi!");
-      return res.status(409).json({ 
-        error: "Ma'lumotlar yo'qolishining oldi olindi", 
-        restoredData: oldData 
-      });
-    }
-
-    // Xavfsiz saqlash
     await pool.query(
       'INSERT INTO app_state (id, data) VALUES (1, $1) ON CONFLICT (id) DO UPDATE SET data = $1',
       [JSON.stringify(newData)]
     );
-
-    res.json({ success: true, message: "Ma'lumotlar muvaffaqiyatli va xavfsiz saqlandi" });
+    res.json({ success: true, message: "Ma'lumotlar muvaffaqiyatli saqlandi" });
   } catch (err) {
     console.error("Ma'lumotni saqlashda xato:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Serverni ishga tushirish
 app.listen(PORT, () => {
-  console.log(`Server ${PORT}-portda muvaffaqiyatli ishga tushdi!`);
+  console.log(`Server ${PORT}-portda modulli tartibda ishga tushdi!`);
 });
