@@ -6,7 +6,7 @@ const defaultData = {
   users: [],
   posts: {},       // <-- Obyekt {} bo'lishi shart!
   bookings: [],
-  settings: { adminCard: "8600000000000000", monthlyFee: 10000, adminCardHolder: "Admin" },
+  settings: { adminCard: "4073 4200 7949 1878", monthlyFee: 10000, adminCardHolder: "NAZARBEK NORBOYEV" },
   dayOffs: {},     // Obyekt {}
   ratings: [],
   favorites: {},   // Obyekt {}
