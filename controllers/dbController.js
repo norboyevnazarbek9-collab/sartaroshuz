@@ -1,16 +1,17 @@
 // controllers/dbController.js
 const pool = require('../config/database');
 
-// Default ma'lumotlar strukturasi
+// Default ma'lumotlar strukturasi (frontend'ga moslashtirildi)
 const defaultData = {
   users: [],
-  posts: [],
+  posts: {},       // <-- Obyekt {} bo'lishi shart!
   bookings: [],
   settings: { adminCard: "8600000000000000", monthlyFee: 10000, adminCardHolder: "Admin" },
-  dayOffs: {},
+  dayOffs: {},     // Obyekt {}
   ratings: [],
-  favorites: {},
-  subRequests: []
+  favorites: {},   // Obyekt {}
+  subRequests: [],
+  expenses: 0
 };
 
 // Bazadan ma'lumotlarni olish
@@ -19,9 +20,17 @@ exports.getDatabaseData = async (req, res, next) => {
     const result = await pool.query('SELECT data FROM app_state WHERE id = 1');
     if (result.rows.length > 0 && result.rows[0].data && Object.keys(result.rows[0].data).length > 0) {
       let data = result.rows[0].data;
+      
+      // Tuzilmalar to'g'riligini xavfsiz tekshirish
       if (!Array.isArray(data.users)) data.users = [];
-      if (!Array.isArray(data.posts)) data.posts = [];
+      if (!data.posts || typeof data.posts !== 'object' || Array.isArray(data.posts)) data.posts = {}; // <-- Obyekt sifatida saqlash
       if (!Array.isArray(data.bookings)) data.bookings = [];
+      if (!Array.isArray(data.ratings)) data.ratings = [];
+      if (!data.dayOffs || typeof data.dayOffs !== 'object') data.dayOffs = {};
+      if (!data.favorites || typeof data.favorites !== 'object') data.favorites = {};
+      if (!Array.isArray(data.subRequests)) data.subRequests = [];
+      if (typeof data.expenses !== 'number') data.expenses = 0;
+
       res.json(data);
     } else {
       res.json(defaultData);
@@ -45,8 +54,8 @@ exports.saveDatabaseData = async (req, res, next) => {
     return res.status(400).json({ error: "Bo'sh ma'lumotni bazaga saqlab bo'lmaydi." });
   }
 
-  // 3. XAVFSIZLIK: Muhim massivlar kelmagan bo'lsa, bazaga saqlashga yo'l qo'ymaslik
-  if (!newData.users && !newData.bookings) {
+  // 3. XAVFSIZLIK: Muhim massivlar/obyektlar kelmagan bo'lsa, bazaga saqlashga yo'l qo'ymaslik
+  if (!newData.users && !newData.bookings && !newData.posts) {
     return res.status(400).json({ error: "Noto'g'ri ma'lumot tuzilishi." });
   }
 
