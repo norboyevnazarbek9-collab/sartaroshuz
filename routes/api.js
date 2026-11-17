@@ -2,17 +2,16 @@ const express = require('express');
 const router = express.Router();
 const dbController = require('../controllers/dbController');
 const authController = require('../controllers/authController');
-const authMiddleware = require('../middleware/auth');
 
-// Public yo'nalishlar (barcha foydalanuvchilar o'qishi uchun)
+// Ochiq yo'nalishlar
 router.get('/db', dbController.getDatabaseData);
 router.get('/', dbController.getDatabaseData);
 
 // Admin login
 router.post('/login', authController.adminLogin);
 
-// Protected yo'nalishlar (faqat token bo'lsa ma'lumot saqlanadi)
-router.post('/db', authMiddleware, dbController.saveDatabaseData);
-router.post('/', authMiddleware, dbController.saveDatabaseData);
+// Ma'lumot saqlash yo'nalishi
+router.post('/db', dbController.saveDatabaseData);
+router.post('/', dbController.saveDatabaseData);
 
 module.exports = router;
