@@ -276,7 +276,7 @@ applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
 try{Telegram.WebApp.ready();Telegram.WebApp.expand();}catch(e){}
 
 const SES = 'bs_session';
-const API_URL = 'https://sartaroshuz.onrender.com/api/db';
+const API_URL = 'https://sartaroshuz.onrender.com/api/db'; // <-- TO'G'RILANDI
 const ADMIN_LOGIN = 'norboyevblog';
 const ADMIN_PASS = '12213443';
 
@@ -304,10 +304,15 @@ async function loadAsync() {
   }
 }
 function load() { return CACHED_DB; }
+
 async function saveAsync(db) {
   CACHED_DB = db;
   try {
-    await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: db }) });
+    await fetch(API_URL, { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify(db) // <-- TO'G'RILANDI: { data: db } o'rniga to'g'ridan-to'g'ri db yuboriladi
+    });
   } catch (e) { console.error("Baza saqlashda xatolik:", e); }
 }
 function save(db) { saveAsync(db); }
@@ -453,7 +458,9 @@ async function doRegister(){
   const db=load();
   if(db.users.some(u=>u.login===phone))return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
   db.users.push({login:phone,pass:await hash(pass),role:S.role,name:S.role==='sartarosh'?'Sartarosh':'Mijoz',phone});
-  save(db);
+  
+  await saveAsync(db); // <-- TO'G'RILANDI: Bazaga yozilishini kutamiz
+  
   S.mode='login';S.err=null;S.msg="Muvaffaqiyatli ro'yxatdan o'tdingiz! Endi kiring.";render();
 }
 async function doLogin(){
@@ -793,7 +800,7 @@ function allPosts(){
     <div class="srow"><select id="s_dist" onchange="doSearch()"><option value="">Toshkent: barcha tumanlar</option>${Object.keys(DISTRICTS).map(d=>`<option value="${esc(d)}" ${S.dist===d?'selected':''}>${esc(d)} tumani</option>`).join('')}</select>
       <button class="btn soft" onclick="nearMe()">${IC.pin}Menga yaqin</button></div>
     <div class="chips"><button class="chip ${S.sort==='rating'?'on':''}" onclick="sortRating()">${IC.star}Reyting</button>
-      <button class="chip ${S.sort==='near'&&S.pos?'on':''}" onclick="sortRating()" onclick="nearMe()">${IC.pin}Yaqinlik</button>
+      <button class="chip ${S.sort==='near'&&S.pos?'on':''}" onclick="nearMe()">${IC.pin}Yaqinlik</button>
       ${S.user&&S.user.role==='mijoz'?`<button class="chip ${S.onlyFav?'on':''}" onclick="toggleOnlyFav()">${IC.heart}Sevimlilar</button>`:''}
       ${(S.q||S.dist||S.pos||S.onlyFav)?`<button class="chip" onclick="clearSearch()">${IC.x}Tozalash</button>`:''}</div></div>`;
   if(!items.length)return search+`<div class="card empty">${IC.search}<b>E'lon yo'q</b>${filtered?"Bu hududda e'lon topilmadi":"Hozircha faol e'lonlar yo'q."}</div>`;
