@@ -36,6 +36,20 @@ router.post('/tg-link', async (req, res) => {
   }
 });
 
+// Python bot: bu chat_id uchun raqam saqlanganmi?
+router.get('/tg-linked', async (req, res) => {
+  if (!API_SECRET || req.get('X-Bot-Secret') !== API_SECRET) {
+    return res.status(401).json({ message: 'Ruxsat berilmagan' });
+  }
+  try {
+    const r = await pool.query('SELECT 1 FROM tg_chats WHERE chat_id = $1 LIMIT 1', [req.query.chatId]);
+    res.json({ linked: r.rows.length > 0 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: 'Xatolik' });
+  }
+});
+
 const codes = {}; // phone -> { code, exp, tries, last }
 
 router.post('/send-code', async (req, res) => {
