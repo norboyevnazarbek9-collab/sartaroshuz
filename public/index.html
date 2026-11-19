@@ -980,7 +980,7 @@ function paid(){
 
 /* ---------- RENDER ---------- */
 function render(){
-  const keep={};['a_phone','a_pass','s_q','s_dist','admin_monthly_fee','admin_card_num','admin_card_holder','crm_expense_input','new_admin_pass'].forEach(id=>{if($(id))keep[id]=$(id).value});
+  const keep={};['a_phone','a_pass','a_code','s_q','s_dist','admin_monthly_fee','admin_card_num','admin_card_holder','crm_expense_input','new_admin_pass'].forEach(id=>{if($(id))keep[id]=$(id).value});
   document.querySelectorAll('[id^="days_input_"]').forEach(el=>{keep[el.id]=el.value});
   $('app').innerHTML=S.user?appView():authView();
   Object.entries(keep).forEach(([id,v])=>{if($(id))$(id).value=v});
@@ -1003,12 +1003,107 @@ window.addEventListener('storage',e=>{
 
 setInterval(async()=>{
   await loadAsync();
-  if(S.user&&!S.modal&&!S.resetModalUser&&!formOpen()&&document.activeElement?.id!=='s_q'){
+  if(S.user&&!S.modal&&!S.resetModalUser&&!formOpen()&&document.activeElement?.id!=='s_q'&&!['a_phone','a_pass','a_code'].includes(document.activeElement?.id)){
     const n=pendingCount();
     if(n>lastPending)toast("Yangi to'lov so'rovi!",'ok');
     render();lastPending=n;
   }
 },5000);
+</script>
+
+<script>
+/* ===== Telegram bot orqali ro'yxatdan o'tish (qo'shimcha) ===== */
+const BOT_USER = '@smartsartaroshxona_bot';               // <-- bot username (@ siz)
+const API_BASE = API_URL.replace(/\/db$/, '');   // https://sartaroshuz.onrender.com/api
+S.reg = { step: 'phone', phone: '', verified: false };
+
+async function callApi(path, body){
+  const r = await fetch(API_BASE + path, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  let d = {}; try{ d = await r.json(); }catch(e){}
+  return { ok: r.ok, data: d };
+}
+
+async function requestCode(phone, resend){
+  if(normPhone(phone).length < 9) return fail("Telefon raqamni to'g'ri kiriting");
+  if(load().users.some(u => u.login === phone)) return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
+  try{
+    const { ok, data } = await callApi('/send-code', { phone });
+    if(!ok) return fail(data.message || 'Xatolik yuz berdi');
+    S.reg = { step:'code', phone, verified:false };
+    S.err = null; S.msg = resend ? "Yangi kod Telegram botga yuborildi" : "Kod Telegram botga yuborildi";
+    render();
+  }catch(e){ fail("Server bilan aloqa yo'q"); }
+}
+function sendCode(){ requestCode(val('a_phone'), false); }
+function resendCode(){ requestCode(S.reg.phone, true); }
+
+async function verifyCode(){
+  const code = val('a_code');
+  if(code.length < 4) return fail("Kodni kiriting");
+  try{
+    const { ok, data } = await callApi('/verify-code', { phone: S.reg.phone, code });
+    if(!ok) return fail((data.message || "Kod xato") + ". Qayta urinib ko'ring yoki kodni qayta yuboring.");
+    S.reg.step = 'pass'; S.reg.verified = true; S.err = null; S.msg = "Raqam tasdiqlandi. Parol o'rnating.";
+    render();
+  }catch(e){ fail("Server bilan aloqa yo'q"); }
+}
+function changePhone(){ S.reg = { step:'phone', phone:'', verified:false }; S.err = null; S.msg = null; render(); }
+
+function msgBox(){
+  return (S.err ? `<div class="err">${esc(S.err)}</div>` : '') + (S.msg ? `<div class="okmsg" style="margin:14px 0 0">${esc(S.msg)}</div>` : '');
+}
+function regView(){
+  const step = S.reg.step;
+  const roleSeg = `<div class="seg">
+     <button class="${S.role==='sartarosh'?'on':''}" onclick="setRole('sartarosh')">${IC.scissors}Sartarosh</button>
+     <button class="${S.role==='mijoz'?'on':''}" onclick="setRole('mijoz')">${IC.user}Mijoz</button></div>`;
+  let inner = '';
+  if(step === 'phone'){
+    inner = `<label>Telefon raqam</label>
+      <input id="a_phone" type="text" autocomplete="off" placeholder="+998 90 123 45 67" value="${esc(S.reg.phone||'')}">
+      <div class="hint" style="margin-top:8px">Avval <a href="https://t.me/${BOT_USER}" target="_blank" style="color:var(--gold);font-weight:600">@${BOT_USER}</a> botiga kirib <b>Start</b> bosing va raqamingizni ulashing.</div>
+      ${msgBox()}
+      <button class="btn primary block" onclick="sendCode()">${IC.phone}Kod yuborish</button>`;
+  } else if(step === 'code'){
+    inner = `<div class="hint" style="margin-top:14px">Kod <b style="color:var(--text)">${esc(S.reg.phone)}</b> raqamiga Telegram bot orqali yuborildi.</div>
+      <label>Tasdiqlash kodi</label>
+      <input id="a_code" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456">
+      ${msgBox()}
+      <button class="btn primary block" onclick="verifyCode()">${IC.check}Tasdiqlash</button>
+      <div style="display:flex;justify-content:space-between;margin-top:14px;flex-wrap:wrap">
+        <button class="link" onclick="resendCode()">Kodni qayta yuborish</button>
+        <button class="link" onclick="changePhone()">Raqamni o'zgartirish</button></div>`;
+  } else {
+    inner = `<label>Telefon raqam</label>
+      <input id="a_phone" type="text" readonly value="${esc(S.reg.phone)}">
+      <label>Parol (kamida 6 ta belgi)</label>
+      <div class="pw"><input id="a_pass" type="${S.showPass?'text':'password'}" autocomplete="new-password" placeholder="••••••">
+        <button type="button" onclick="toggleShowPass()">${S.showPass?IC.eyeoff:IC.eye}</button></div>
+      ${msgBox()}
+      <button class="btn primary block" onclick="doRegister()">${IC.user}Ro'yxatdan o'tish</button>`;
+  }
+  return `<div class="auth">
+    <div class="auth-top">${themeBtn()}</div>
+    <div class="brand"><div class="logo">${IC.scissors}</div><h1>Sartaroshxona</h1><p>Navbat kutmang — vaqtni oldindan band qiling</p></div>
+    <div class="card" style="padding:22px"><h2>Ro'yxatdan o'tish</h2>${roleSeg}${inner}
+      <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="link" onclick="go('login')">Kirish</button></div>
+    </div></div>
+    ${S.showForgotModal ? forgotModalView() : ''}`;
+}
+
+/* mavjud funksiyalarni o'zgartirmasdan ustidan o'rash */
+const _authView = authView;
+authView = function(){ return S.mode === 'register' ? regView() : _authView(); };
+
+const _go = go;
+go = function(m){ S.reg = { step:'phone', phone:'', verified:false }; _go(m); };
+
+const _doRegister = doRegister;
+doRegister = async function(){
+  if(!S.reg.verified) return fail("Avval telefon raqamni Telegram orqali tasdiqlang");
+  await _doRegister();
+  if(S.mode === 'login') S.reg = { step:'phone', phone:'', verified:false }; // keyingi ro'yxatdan o'tish uchun qayta tasdiqlash
+};
 </script>
 </body>
 </html>
