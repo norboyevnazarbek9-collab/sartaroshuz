@@ -14,4 +14,7 @@ router.post('/login', authController.adminLogin);
 router.post('/db', dbController.saveDatabaseData);
 router.post('/', dbController.saveDatabaseData);
 
+// Telegram orqali kod yuborish va tekshirish
+router.use(require('./telegram'));
+
 module.exports = router;
