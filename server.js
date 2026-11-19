@@ -7,6 +7,7 @@ const apiRoutes = require('./routes/api');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
+app.set('trust proxy', 1); // Render proksisi orqasida to'g'ri IP aniqlash uchun
 const PORT = process.env.PORT || 10000;
 
 app.use(helmet({
