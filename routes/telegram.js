@@ -71,6 +71,7 @@ router.get('/tg-linked', async (req, res) => {
 
 const codes = {}; // phone -> { code, exp, tries, last }
 
+// Saytda foydalanuvchi raqam kiritib "Kod yuborish" bosganda botga kod yuboradi
 router.post('/send-code', async (req, res) => {
   try {
     if (!BOT_TOKEN) {
@@ -89,7 +90,7 @@ router.post('/send-code', async (req, res) => {
     if (!r.rows.length) {
       return res.status(404).json({
         message:
-          "Bu raqam botda topilmadi. Avval botga kirib Start bosing va raqamingizni ulashing.",
+          "Bu raqam botda topilmadi. Avval botga kirib Start bosing va «Raqamni ulashish» tugmasini bosing.",
       });
     }
 
@@ -129,6 +130,7 @@ router.post('/send-code', async (req, res) => {
   }
 });
 
+// Saytda kod kiritilganda tekshiradi; muvaffaqiyatli bo'lsa { ok: true } qaytaradi
 router.post('/verify-code', async (req, res) => {
   const phone = norm(req.body.phone);
   const c = codes[phone];
