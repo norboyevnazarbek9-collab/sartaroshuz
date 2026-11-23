@@ -181,6 +181,7 @@
     white-space: nowrap;
     transition: transform .15s, filter .15s, background .15s, box-shadow .15s;
     user-select: none;
+    text-decoration: none;
   }
   .btn:active { transform: scale(0.97); }
   .btn:disabled { opacity: .5; pointer-events: none; }
@@ -348,7 +349,7 @@
     border: 1px solid var(--line);
     border-radius: 24px;
     box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
-    width: min(560px, calc(100% - 24px));
+    width: min(580px, calc(100% - 24px));
   }
   .bnav button {
     flex: 1;
@@ -387,6 +388,87 @@
     place-items: center;
     padding: 0 4px;
     border: 2px solid var(--surface);
+  }
+
+  /* referral & leaderboard */
+  .ref-banner {
+    background: linear-gradient(135deg, rgba(229, 184, 92, 0.14), rgba(196, 147, 53, 0.04));
+    border: 1px solid var(--line-gold);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .ref-box {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .ref-box input {
+    height: 44px;
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+  }
+  .rank-hero {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0 18px;
+  }
+  .rank-kpi {
+    background: var(--surface2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .rank-kpi b {
+    display: block;
+    font-family: var(--head);
+    font-size: 22px;
+    color: var(--gold);
+  }
+  .rank-kpi span {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .lb-row.me {
+    border-color: var(--gold);
+    background: var(--gold-glow);
+  }
+  .lb-pos {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-family: var(--head);
+    font-weight: 800;
+    font-size: 14px;
+    background: var(--surface3);
+    color: var(--text);
+    flex: none;
+  }
+  .lb-pos.p1 { background: #facc15; color: #141108; }
+  .lb-pos.p2 { background: #cbd5e1; color: #0f172a; }
+  .lb-pos.p3 { background: #d97706; color: #fff; }
+  .lb-pts {
+    font-family: var(--head);
+    font-weight: 800;
+    color: var(--gold);
+    white-space: nowrap;
   }
 
   /* search */
@@ -735,6 +817,7 @@
     .list .it { flex-direction: column; gap: 6px; }
     .list .it > div:last-child { text-align: left!important; }
     .service-item { grid-template-columns: 1fr 100px auto; }
+    .rank-hero { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -744,6 +827,7 @@
 
 <script>
 const THEME_KEY = 'bs_theme';
+const REF_STORAGE_KEY = 'bs_pending_ref';
 function applyTheme(t){
   const isLight = t === 'light';
   document.documentElement.classList.toggle('light', isLight);
@@ -763,11 +847,15 @@ applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
 try{Telegram.WebApp.ready();Telegram.WebApp.expand();}catch(e){}
 
 const SES = 'bs_session';
-const API_URL = 'https://sartaroshuz.onrender.com/api/db'; // <-- TO'G'RILANDI
+const API_URL = 'https://sartaroshuz.onrender.com/api/db';
 const ADMIN_LOGIN = 'norboyevfx';
 const ADMIN_PASS = '12213443';
 
-const empty = () => ({ users: [], posts: {}, bookings: [], ratings: [], dayOffs: {}, favorites: {}, settings: { monthlyFee: 10000, adminCard: '8600000000000000', adminCardHolder: 'Admin' }, subRequests: [], expenses: 0 });
+const empty = () => ({
+  users: [], posts: {}, bookings: [], ratings: [], dayOffs: {}, favorites: {},
+  settings: { monthlyFee: 10000, adminCard: '8600000000000000', adminCardHolder: 'Admin' },
+  subRequests: [], expenses: 0, referrals: {}
+});
 let CACHED_DB = empty();
 
 async function loadAsync() {
@@ -784,6 +872,7 @@ async function loadAsync() {
     d.settings = d.settings || { monthlyFee: 10000, adminCard: '8600000000000000', adminCardHolder: 'Admin' };
     d.subRequests = d.subRequests || [];
     d.expenses = d.expenses || 0;
+    d.referrals = d.referrals || {};
     CACHED_DB = d;
     return d;
   } catch (e) {
@@ -795,10 +884,10 @@ function load() { return CACHED_DB; }
 async function saveAsync(db) {
   CACHED_DB = db;
   try {
-    await fetch(API_URL, { 
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' }, 
-      body: JSON.stringify(db) // <-- TO'G'RILANDI: { data: db } o'rniga to'g'ridan-to'g'ri db yuboriladi
+    await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(db)
     });
   } catch (e) { console.error("Baza saqlashda xatolik:", e); }
 }
@@ -819,7 +908,7 @@ const pad=n=>String(n).padStart(2,'0');
 const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const money=n=>Number(n).toLocaleString('ru-RU')+" so'm";
 const DAYS=['Dush','Sesh','Chor','Pay','Jum','Shan','Yak'];
-const normPhone=s=>s.replace(/\D/g,'');
+const normPhone=s=>String(s||'').replace(/\D/g,'');
 const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
 const fromMin=m=>`${pad(Math.floor(m/60))}:${pad(m%60)}`;
 const fmtCard=s=>String(s||'').replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim();
@@ -842,6 +931,119 @@ function isSubActive(p){
   if(p.isSuspended) return false;
   const until = p.subUntil || (Date.now() + 30*24*3600*1000);
   return until > Date.now();
+}
+
+/* ---------- REFERRAL & TOP-10 HELPERS ---------- */
+function captureRefFromUrl(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const ref = normPhone(params.get('ref') || '');
+    if(ref.length >= 9){
+      localStorage.setItem(REF_STORAGE_KEY, ref);
+      return ref;
+    }
+  }catch(e){}
+  return normPhone(localStorage.getItem(REF_STORAGE_KEY) || '');
+}
+function getRefLink(login){
+  const code = normPhone(login);
+  const base = window.location.origin + window.location.pathname;
+  return `${base}?ref=${encodeURIComponent(code)}`;
+}
+function getReferrerCount(db, login){
+  const target = normPhone(login);
+  const refs = db.referrals || {};
+  return Object.values(refs).filter(r => r && normPhone(r.referrer) === target).length;
+}
+function getLeaderboard(db){
+  const users = (db.users || []).filter(u => u.login !== ADMIN_LOGIN && u.role !== 'admin');
+  const seen = new Set();
+  const rows = [];
+  for(const u of users){
+    const key = normPhone(u.login || u.phone);
+    if(!key || seen.has(key)) continue;
+    seen.add(key);
+    const count = getReferrerCount(db, u.login);
+    rows.push({
+      login: u.login,
+      phone: u.phone || u.login,
+      role: u.role,
+      count
+    });
+  }
+  rows.sort((a, b) => (b.count - a.count) || a.phone.localeCompare(b.phone));
+  return rows;
+}
+function getUserRankInfo(db, login){
+  const lb = getLeaderboard(db);
+  const idx = lb.findIndex(x => normPhone(x.login) === normPhone(login));
+  const count = idx > -1 ? lb[idx].count : getReferrerCount(db, login);
+  const rank = idx > -1 ? idx + 1 : (lb.length + 1);
+  return { rank, count, top10: lb.slice(0, 10), allSorted: lb };
+}
+function copyRefLink(login){
+  const link = getRefLink(login);
+  try{
+    navigator.clipboard.writeText(link).then(()=>toast("Referal havola nusxalandi!", "ok"));
+  }catch(e){
+    toast("Havolani qo'lda nusxalang", "");
+  }
+}
+function shareRefTelegram(login){
+  const link = getRefLink(login);
+  const txt = encodeURIComponent("✂️ Smart Sartaroshxona — navbat kutmasdan yoziling! Eng ko'p do'stini taklif qilgan TOP-10 kishiga 3 marta bepul soch oldirish sovg'a:\n" + link);
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${txt}`, "_blank");
+}
+function referralCardView(user){
+  const db = load();
+  const info = getUserRankInfo(db, user.login);
+  const link = getRefLink(user.login);
+  const inTop10 = info.rank <= 10 && info.count > 0;
+
+  return `<div class="card">
+    <h2>Referal va Top-10 Reyting</h2>
+    <div class="ref-banner">
+      <div style="font-weight:700;font-size:15px;color:var(--gold)">🏆 Sovrin: Top-10 g'olibga 3 marta bepul soch oldirish!</div>
+      <div class="hint" style="margin-top:4px">Havolangiz orqali yangi foydalanuvchi ro'yxatdan o'tsa, sizga <b>+1 ball</b> qo'shiladi. Reyting real vaqtda yangilanadi.</div>
+      <div class="ref-box">
+        <input type="text" readonly value="${esc(link)}" onclick="this.select()">
+        <button class="btn primary sm" onclick="copyRefLink('${js(user.login)}')">${IC.copy}Nusxa</button>
+        <button class="btn soft sm" onclick="shareRefTelegram('${js(user.login)}')">Telegram</button>
+      </div>
+    </div>
+
+    <div class="rank-hero">
+      <div class="rank-kpi">
+        <b>#${info.rank}</b>
+        <span>Sizning o'rningiz</span>
+      </div>
+      <div class="rank-kpi">
+        <b>${info.count}</b>
+        <span>Taklif qilinganlar</span>
+      </div>
+      <div class="rank-kpi">
+        <b>${inTop10 ? 'TOP-10' : 'Kutishda'}</b>
+        <span>${inTop10 ? 'Sovrin zonasida' : 'Top-10 ga intiling'}</span>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:10px">Jonli Top-10 Reyting</h3>
+    ${info.top10.length ? info.top10.map((item, i) => {
+      const pos = i + 1;
+      const isMe = normPhone(item.login) === normPhone(user.login);
+      const medalCls = pos === 1 ? 'p1' : pos === 2 ? 'p2' : pos === 3 ? 'p3' : '';
+      return `<div class="lb-row ${isMe ? 'me' : ''}">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <div class="lb-pos ${medalCls}">${pos}</div>
+          <div style="min-width:0">
+            <div style="font-weight:700;font-size:14px">${esc(item.phone)} ${isMe ? '<span class="tag me">Siz</span>' : ''}</div>
+            <div class="hint">${item.role === 'sartarosh' ? 'Sartarosh' : 'Mijoz'} · 3x bepul xizmat zonasi</div>
+          </div>
+        </div>
+        <div class="lb-pts">${item.count} ball</div>
+      </div>`;
+    }).join('') : '<div class="empty">Hozircha reyting bo\'sh</div>'}
+  </div>`;
 }
 
 const ic=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
@@ -887,7 +1089,7 @@ let toastT;
 function toast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='show '+type;clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3600)}
 
 const S={mode:'login',role:'mijoz',user:null,tab:null,viewing:null,week:0,day:null,modal:null,msg:null,err:null,draft:null,editing:false,
-  q:'',dist:'',sort:'rating',pos:null,selectedServices:[],onlyFav:false,showForgotModal:false,showPass:false,resetModalUser:null,showNewPass:false};
+  q:'',dist:'',sort:'rating',pos:null,selectedServices:[],onlyFav:false,showForgotModal:false,showPass:false,resetModalUser:null,showNewPass:false,pendingRef:''};
 
 function currentUser(){
   const l=localStorage.getItem(SES); if(!l)return null;
@@ -901,10 +1103,12 @@ const formOpen=()=>!!S.user&&S.user.role==='sartarosh'&&S.tab==='post'&&!S.viewi
 
 /* ---------- AUTH ---------- */
 function authView(){
+  const ref = S.pendingRef || captureRefFromUrl();
   return `<div class="auth">
   <div class="auth-top">${themeBtn()}</div>
   <div class="brand"><div class="logo">${IC.scissors}</div><h1>Sartaroshxona</h1><p>Navbat kutmang — vaqtni oldindan band qiling</p></div>
   <div class="card" style="padding:22px"><h2>${S.mode==='register'?"Ro'yxatdan o'tish":'Kirish'}</h2>
+  ${ref ? `<div class="okmsg" style="margin-bottom:14px">🎁 Taklif havolasi faol: <b>+${esc(ref)}</b></div>` : ''}
   <div class="seg">
      <button class="${S.role==='sartarosh'?'on':''}" onclick="setRole('sartarosh')">${IC.scissors}Sartarosh</button>
      <button class="${S.role==='mijoz'?'on':''}" onclick="setRole('mijoz')">${IC.user}Mijoz</button></div>
@@ -940,14 +1144,31 @@ const val=id=>($(id)?.value||'').trim();
 
 async function doRegister(){
   const phone=val('a_phone'), pass=val('a_pass');
-  if(phone.length<9)return fail("Telefon raqamni to'g'ri kiriting");
+  if(normPhone(phone).length<9)return fail("Telefon raqamni to'g'ri kiriting");
   if(pass.length<6)return fail("Parol kamida 6 ta belgi bo'lishi kerak");
   const db=load();
-  if(db.users.some(u=>u.login===phone))return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
+  if(db.users.some(u=>normPhone(u.login)===normPhone(phone)))return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
+
   db.users.push({login:phone,pass:await hash(pass),role:S.role,name:S.role==='sartarosh'?'Sartarosh':'Mijoz',phone});
-  
-  await saveAsync(db); // <-- TO'G'RILANDI: Bazaga yozilishini kutamiz
-  
+
+  // Referal hisoblash (+1 ball taklif qilganga)
+  const refCode = normPhone(S.pendingRef || captureRefFromUrl());
+  const newKey = normPhone(phone);
+  db.referrals = db.referrals || {};
+  if(refCode && refCode.length >= 9 && refCode !== newKey && !db.referrals[newKey]){
+    const inviter = db.users.find(u => normPhone(u.login) === refCode || normPhone(u.phone) === refCode);
+    if(inviter){
+      db.referrals[newKey] = {
+        referrer: inviter.login,
+        invitedPhone: phone,
+        time: Date.now()
+      };
+      localStorage.removeItem(REF_STORAGE_KEY);
+      S.pendingRef = '';
+    }
+  }
+
+  await saveAsync(db);
   S.mode='login';S.err=null;S.msg="Muvaffaqiyatli ro'yxatdan o'tdingiz! Endi kiring.";render();
 }
 async function doLogin(){
@@ -972,17 +1193,18 @@ function logout(){localStorage.removeItem(SES);Object.assign(S,{user:null,viewin
 function appView(){
   const u=S.user,isAdmin=(u.login===ADMIN_LOGIN||u.role==='admin'),isB=u.role==='sartarosh',pc=pendingCount();
   let tabs=[];
-  if(isAdmin) tabs=[['admin_stat','chart','Statistika'],['admin_pay','wallet',"To'lovlar"],['admin_users','users','Foydalanuvchi'],['admin_crm','trend','CRM']];
-  else if(isB) tabs=[['post','edit',"E'lonim"],['cal','calendar','Kalendar',pc],['all','search',"E'lonlar"],['sub_pay','wallet','Obuna']];
-  else tabs=[['all','search',"E'lonlar"],['mine','calendar','Yozuvlarim']];
+  if(isAdmin) tabs=[['admin_stat','chart','Statistika'],['admin_pay','wallet',"To'lovlar"],['admin_users','users','Userlar'],['admin_ref','star','Referal'],['admin_crm','trend','CRM']];
+  else if(isB) tabs=[['post','edit',"E'lonim"],['cal','calendar','Kalendar',pc],['all','search',"E'lonlar"],['ref_tab','star','Referal'],['sub_pay','wallet','Obuna']];
+  else tabs=[['all','search',"E'lonlar"],['mine','calendar','Yozuvlarim'],['ref_tab','star','Referal']];
 
   let body='';
   if(isAdmin){
-    body=S.tab==='admin_pay'?adminPayView():S.tab==='admin_users'?adminUsersView():S.tab==='admin_crm'?adminCrmView():adminStatView();
+    body=S.tab==='admin_pay'?adminPayView():S.tab==='admin_users'?adminUsersView():S.tab==='admin_ref'?adminReferralsView():S.tab==='admin_crm'?adminCrmView():adminStatView();
   } else if(S.viewing) body=detailView(S.viewing);
   else if(S.tab==='post') body=myPostTab();
   else if(S.tab==='cal') body=myCalendar();
   else if(S.tab==='mine') body=myBookings();
+  else if(S.tab==='ref_tab') body=referralCardView(u);
   else if(S.tab==='sub_pay') body=subPayTab();
   else body=allPosts();
 
@@ -997,6 +1219,37 @@ function appView(){
 function setTab(t){S.tab=t;S.viewing=null;S.week=0;S.day=null;S.msg=null;S.err=null;if(t!=='post'){S.editing=false;S.draft=null}render();window.scrollTo({top:0})}
 
 /* ---------- ADMIN ---------- */
+function adminReferralsView(){
+  const db = load();
+  const sorted = getLeaderboard(db);
+  const totalRefs = Object.keys(db.referrals || {}).length;
+  return `<div class="card">
+    <h2>Referal va Top-10 G'oliblar</h2>
+    <div class="stat">
+      <div class="s"><b>${totalRefs}</b><span>Jami referal o'tishlar</span></div>
+      <div class="s"><b>${Math.min(10, sorted.filter(x => x.count > 0).length)}</b><span>Top-10 faol ishtirokchi</span></div>
+    </div>
+    <div class="hint" style="margin-bottom:12px">Telefon raqam bo'yicha eng ko'p do'stini taklif qilganlar tartibida (Top-10 ga 3 marta bepul soch oldirish):</div>
+    <div class="list">
+      ${sorted.length ? sorted.map((item, idx) => {
+        const pos = idx + 1;
+        const isTop10 = pos <= 10 && item.count > 0;
+        return `<div class="it">
+          <div>
+            <b>#${pos} · ${esc(item.phone)}</b>
+            ${isTop10 ? '<span class="tag top" style="margin-left:6px">TOP-10 (3x bepul)</span>' : ''}
+            <br><span class="hint">Rol: ${esc(item.role)}</span>
+          </div>
+          <div style="text-align:right">
+            <b style="color:var(--gold);font-size:17px;font-family:var(--head)">${item.count} ta</b>
+            <div class="hint">taklif</div>
+          </div>
+        </div>`;
+      }).join('') : '<div class="empty">Hozircha referal ma\'lumotlari yo\'q</div>'}
+    </div>
+  </div>`;
+}
+
 function adminStatView(){
   const db=load(),users=db.users||[],posts=Object.entries(db.posts||{});
   const customers=users.filter(u=>u.role==='mijoz'),barbers=users.filter(u=>u.role==='sartarosh'),bookings=db.bookings||[];
@@ -1042,11 +1295,13 @@ function adminPayView(){
   </div></div>`;
 }
 function adminUsersView(){
-  const users=load().users||[];
+  const db=load(),users=db.users||[];
   return `<div class="card"><h2>Foydalanuvchilar</h2><div class="hint" style="margin-bottom:8px">Parolini unutganlarga yangi parol o'rnating</div><div class="list">
-    ${users.length?users.map(u=>`<div class="it"><div><b>${esc(u.phone)}</b> <span class="tag ${u.role==='sartarosh'?'me':''}">${u.role}</span><br><span class="hint">${esc(u.name||'Noma\'lum')}</span></div>
+    ${users.length?users.map(u=>{
+      const rc = getReferrerCount(db, u.login);
+      return `<div class="it"><div><b>${esc(u.phone)}</b> <span class="tag ${u.role==='sartarosh'?'me':''}">${u.role}</span> <span class="tag on">${rc} taklif</span><br><span class="hint">${esc(u.name||'Noma\'lum')}</span></div>
       <div style="display:flex;gap:6px"><button class="btn soft sm" onclick="openResetModal('${js(u.login)}')">${IC.key}Parol</button>
-      <button class="btn ghost sm danger" onclick="adminDeleteUser('${js(u.login)}')">${IC.trash}</button></div></div>`).join(''):'<div class="empty">Foydalanuvchilar yo\'q</div>'}
+      <button class="btn ghost sm danger" onclick="adminDeleteUser('${js(u.login)}')">${IC.trash}</button></div></div>`}).join(''):'<div class="empty">Foydalanuvchilar yo\'q</div>'}
   </div></div>`;
 }
 function openResetModal(login){S.resetModalUser=login;S.showNewPass=false;render()}
@@ -1202,7 +1457,7 @@ function savePost(){
   if(p.phone.length<3)return bad("Telefon raqamni to'g'ri kiriting");
   if(!(p.price>=1000))return bad("Xizmat narxini kiriting");
   if(!p.days.length)return bad('Kamida bitta ish kunini tanlang');
-  if(!p.from||!p.to||toMin(p.to)-toMin(p.from)<p.slot)return bad("Ish vaqti noto'g me xato");
+  if(!p.from||!p.to||toMin(p.to)-toMin(p.from)<p.slot)return bad("Ish vaqti noto'g'ri");
   if(p.card.length!==16)return bad("Karta raqami 16 ta raqamdan iborat bo'lishi kerak");
   if(p.holder.length<3)return bad('Karta egasining ismini kiriting');
   const db=load();db.posts[S.user.login]={...p,updated:Date.now()};save(db);
@@ -1475,8 +1730,13 @@ function render(){
 }
 
 async function initApp(){
+  const ref = captureRefFromUrl();
+  if(ref) S.pendingRef = ref;
   await loadAsync();
   S.user=currentUser();
+  if(!S.user && S.pendingRef){
+    S.mode = 'register';
+  }
   if(S.user&&!S.tab)S.tab=firstTab(S.user);
   lastPending=pendingCount();
   render();
@@ -1500,8 +1760,8 @@ setInterval(async()=>{
 
 <script>
 /* ===== Telegram bot orqali ro'yxatdan o'tish (qo'shimcha) ===== */
-const BOT_USER = 'smartsartaroshxona_bot';               // <-- bot username (@ siz)
-const API_BASE = API_URL.replace(/\/db$/, '');   // https://sartaroshuz.onrender.com/api
+const BOT_USER = 'smartsartaroshxona_bot';
+const API_BASE = API_URL.replace(/\/db$/, '');
 S.reg = { step: 'phone', phone: '', verified: false };
 
 async function callApi(path, body){
@@ -1512,7 +1772,7 @@ async function callApi(path, body){
 
 async function requestCode(phone, resend){
   if(normPhone(phone).length < 9) return fail("Telefon raqamni to'g'ri kiriting");
-  if(load().users.some(u => u.login === phone)) return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
+  if(load().users.some(u => normPhone(u.login) === normPhone(phone))) return fail("Bu telefon raqam allaqachon ro'yxatdan o'tgan!");
   try{
     const { ok, data } = await callApi('/send-code', { phone });
     if(!ok) return fail(data.message || 'Xatolik yuz berdi');
@@ -1541,6 +1801,7 @@ function msgBox(){
 }
 function regView(){
   const step = S.reg.step;
+  const ref = S.pendingRef || captureRefFromUrl();
   const roleSeg = `<div class="seg">
      <button class="${S.role==='sartarosh'?'on':''}" onclick="setRole('sartarosh')">${IC.scissors}Sartarosh</button>
      <button class="${S.role==='mijoz'?'on':''}" onclick="setRole('mijoz')">${IC.user}Mijoz</button></div>`;
@@ -1572,13 +1833,14 @@ function regView(){
   return `<div class="auth">
     <div class="auth-top">${themeBtn()}</div>
     <div class="brand"><div class="logo">${IC.scissors}</div><h1>Sartaroshxona</h1><p>Navbat kutmang — vaqtni oldindan band qiling</p></div>
-    <div class="card" style="padding:22px"><h2>Ro'yxatdan o'tish</h2>${roleSeg}${inner}
+    <div class="card" style="padding:22px"><h2>Ro'yxatdan o'tish</h2>
+      ${ref ? `<div class="okmsg" style="margin-bottom:14px">🎁 Sizni <b>+${esc(ref)}</b> taklif qildi! Ro'yxatdan o'tsangiz unga +1 ball tushadi.</div>` : ''}
+      ${roleSeg}${inner}
       <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="link" onclick="go('login')">Kirish</button></div>
     </div></div>
     ${S.showForgotModal ? forgotModalView() : ''}`;
 }
 
-/* mavjud funksiyalarni o'zgartirmasdan ustidan o'rash */
 const _authView = authView;
 authView = function(){ return S.mode === 'register' ? regView() : _authView(); };
 
@@ -1589,7 +1851,7 @@ const _doRegister = doRegister;
 doRegister = async function(){
   if(!S.reg.verified) return fail("Avval telefon raqamni Telegram orqali tasdiqlang");
   await _doRegister();
-  if(S.mode === 'login') S.reg = { step:'phone', phone:'', verified:false }; // keyingi ro'yxatdan o'tish uchun qayta tasdiqlash
+  if(S.mode === 'login') S.reg = { step:'phone', phone:'', verified:false };
 };
 </script>
 </body>
